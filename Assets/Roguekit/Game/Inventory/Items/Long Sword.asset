@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e31da020c83a7ca43a7040820c80e50e, type: 3}
+  m_Name: Long Sword
+  m_EditorClassIdentifier: 
+  Id: 17
+  Type: 0
+  SpriteName: Sword
+  Colour: {r: 1, g: 1, b: 1, a: 1}
+  Price: 25
+  Stacks: 0
+  AttackRating: 10
+  DefenceRating: 0
+  MagicRating: 0
+  Slot: 7
+  Ammo: {fileID: 0}
+  Range: 0
+  Skill: 

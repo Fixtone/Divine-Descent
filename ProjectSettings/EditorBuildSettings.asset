@@ -6,9 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Roguekit/Scenes/Main Menu.unity
-    guid: 262c25336136e914a80dfdc51e6b3ceb
+    path: Assets/Level/Scenes/MainMenu.unity
+    guid: 50c6fd880f3cccc46b500941e078cd3b
   - enabled: 1
-    path: Assets/Roguekit/Scenes/Game Scene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Level/Scenes/Game.unity
+    guid: 5d23cb6bfa1ed7e47b2defd29d8002de
   m_configObjects: {}

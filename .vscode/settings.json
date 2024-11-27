@@ -51,5 +51,10 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Divine-Descent.sln"
+    "dotnet.defaultSolution": "Divine-Descent.sln",
+    "cSpell.words": [
+        "Behaviour",
+        "Prefs",
+        "Tileset"
+    ]
 }

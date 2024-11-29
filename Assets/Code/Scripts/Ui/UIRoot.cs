@@ -6,6 +6,6 @@
 public class UIRoot : MonoBehaviour
 {
     [SerializeField]
-    private GameView gameView;
-    public GameView GameView => gameView;
+    private GenerateMapView generateMapView;
+    public GenerateMapView GenerateMapView => generateMapView;
 }

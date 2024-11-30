@@ -1,6 +1,7 @@
 using System.IO;
 using RogueSharp;
 using RogueSharp.Random;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -12,6 +13,8 @@ public class GameManager : MonoBehaviour
     public string TileSet = "ASCII";
     public int WorldSeed = 1234;
     public static IRandom WorldRandom;
+
+    public GameObject player;
 
     // Start is called before the first frame update
     private void Awake()

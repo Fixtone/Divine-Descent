@@ -9,7 +9,7 @@ public class MapManager : MonoBehaviour
     public static MapManager Instance;
     #endregion
 
-    public Map map { get; private set; }
+    public GameMap map { get; private set; }
 
     // Start is called before the first frame update
     private void Awake()

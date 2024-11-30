@@ -19,6 +19,17 @@ public class StateManager : MonoBehaviour
         Instance = this;
     }
 
+    private void Update()
+    {
+        BaseState currentState = currentStates.Peek();
+        if (currentState == null)
+        {
+            return;
+        }
+
+        currentStates.Peek().UpdateState();
+    }
+
     public void AddState(BaseState newState)
     {
         currentStates.Push(newState);

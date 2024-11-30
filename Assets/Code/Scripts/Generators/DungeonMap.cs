@@ -5,7 +5,7 @@ using RogueSharp.MapCreation;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class DungeonMap : Map
+public class DungeonMap : GameMap
 {
     public List<Rectangle> Rooms;
 
@@ -27,7 +27,7 @@ public class DungeonMap : Map
         return dungeonMap;
     }
 
-    public void UpdatePlayerFieldOfView(Player player)
+    public override void UpdatePlayerFieldOfView(Player player)
     {
         // Compute the field-of-view based on the player's location and awareness
         ComputeFov((int)player.transform.localPosition.x, (int)player.transform.localPosition.y, 10, /*player.Awareness*/ true);
@@ -41,7 +41,7 @@ public class DungeonMap : Map
         }
     }
 
-    public void AddPlayer(GameObject player)
+    public override void AddPlayer(GameObject player)
     {
         GameManager.Instance.player = player;
         Player playerComponent = player.GetComponent<Player>();
@@ -51,13 +51,13 @@ public class DungeonMap : Map
         SchedulingManager.instance.Add(player.GetComponent<Player>());
     }
 
-    public void SetIsWalkable(int x, int y, bool isWalkable)
+    public override void SetIsWalkable(int x, int y, bool isWalkable)
     {
         Cell cell = GetCell(x, y) as Cell;
         SetCellProperties(cell.X, cell.Y, cell.IsTransparent, isWalkable, cell.IsExplored);
     }
 
-    public bool SetActorPosition(Actor actor, int x, int y)
+    public override bool SetActorPosition(Actor actor, int x, int y)
     {
         if (GetCell(x, y).IsWalkable)                                                       // Only allow actor placement if the cell is walkable
         {

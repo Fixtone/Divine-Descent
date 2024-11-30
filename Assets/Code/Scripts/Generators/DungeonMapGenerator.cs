@@ -36,12 +36,14 @@ public class DungeonMapGenerator
     private void PlacePlayer()
     {
         GameObject player = GameManager.Instance.player;
-        if(player == null)
+        if (player == null)
         {
             GameObject playerPrefab = Resources.Load<GameObject>("Prefabs/Actors/Player");
             player = GameObject.Instantiate(playerPrefab);
         }
 
         player.transform.localPosition = new Vector3(_map.Rooms[0].Center.X, _map.Rooms[0].Center.Y, 0.0f);
+
+        _map.AddPlayer(player);
     }
 }

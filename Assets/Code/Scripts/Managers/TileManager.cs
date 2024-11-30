@@ -29,14 +29,39 @@ public class TileManager : MonoBehaviour
         {
             for (int y = 0; y < currentMap.Height; y++)
             {
-                ICell cell = currentMap.GetCell(x,y);
+                ICell cell = currentMap.GetCell(x, y);
                 string tileGraphic = cell.IsWalkable ? "Floor" : "Wall";
-                string tileName = string.Format("Tiles/{0}/{1}", GameManager.Instance.TileSet,  tileGraphic);
+                string tileName = string.Format("Tiles/{0}/{1}", GameManager.Instance.TileSet, tileGraphic);
                 Tile tile = Resources.Load(tileName) as Tile;
 
+                Color color = Color.white;
+                if (currentMap.IsInFov(cell.X, cell.Y))
+                {
+                    if (cell.IsExplored)
+                    {
+                        color = tile.color;
+                    }
+                    else
+                    {
+                        color = Color.black;
+                    }
+                }
+                else
+                {
+                    if (cell.IsExplored)
+                    {
+                        color = new Color(tile.color.r, tile.color.g, tile.color.b, 125.0f);
+                    }
+                    else
+                    {
+                        color = Color.black;
+                    }
+
+                }
+
                 floorTileMap.SetTile(new Vector3Int(x, y, 0), tile);
-                floorTileMap.SetTileFlags(new Vector3Int(x, y, 0), TileFlags.None); 
-                floorTileMap.SetColor(new Vector3Int(x, y, 0), tile.color);
+                floorTileMap.SetTileFlags(new Vector3Int(x, y, 0), TileFlags.None);
+                floorTileMap.SetColor(new Vector3Int(x, y, 0), color);
             }
         }
     }

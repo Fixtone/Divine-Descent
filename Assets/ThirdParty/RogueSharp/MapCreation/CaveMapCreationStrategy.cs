@@ -27,7 +27,7 @@ namespace RogueSharp.MapCreation
       /// <param name="height">The height of the Map to be created</param>
       /// <param name="fillProbability">Recommend int between 40 and 60. Percent chance that a given cell will be a floor when randomizing all cells.</param>
       /// <param name="totalIterations">Recommend int between 2 and 5. Number of times to execute the cellular automata algorithm.</param>
-      /// <param name="cutoffOfBigAreaFill">Recommend int less than 4. The interation number to switch from the large area fill algorithm to a nearest neighbor algorithm</param>
+      /// <param name="cutoffOfBigAreaFill">Recommend int less than 4. The iteration number to switch from the large area fill algorithm to a nearest neighbor algorithm</param>
       /// <param name="random">A class implementing IRandom that will be used to generate pseudo-random numbers necessary to create the Map</param>
       public CaveMapCreationStrategy( int width, int height, int fillProbability, int totalIterations, int cutoffOfBigAreaFill, IRandom random )
       {
@@ -47,7 +47,7 @@ namespace RogueSharp.MapCreation
       /// <param name="height">The height of the Map to be created</param>
       /// <param name="fillProbability">Recommend int between 40 and 60. Percent chance that a given cell will be a floor when randomizing all cells.</param>
       /// <param name="totalIterations">Recommend int between 2 and 5. Number of times to execute the cellular automata algorithm.</param>
-      /// <param name="cutoffOfBigAreaFill">Recommend int less than 4. The interation number to switch from the large area fill algorithm to a nearest neighbor algorithm</param>
+      /// <param name="cutoffOfBigAreaFill">Recommend int less than 4. The iteration number to switch from the large area fill algorithm to a nearest neighbor algorithm</param>
       /// <remarks>Uses DotNetRandom as its RNG</remarks>
       public CaveMapCreationStrategy( int width, int height, int fillProbability, int totalIterations, int cutoffOfBigAreaFill )
       {
@@ -83,7 +83,7 @@ namespace RogueSharp.MapCreation
             }
             else if ( i >= _cutoffOfBigAreaFill )
             {
-               CellularAutomaNearestNeighborsAlgorithm();
+               CellularAutomataNearestNeighborsAlgorithm();
             }
          }
 
@@ -113,7 +113,7 @@ namespace RogueSharp.MapCreation
 
       private void CellularAutomataBigAreaAlgorithm()
       {
-         var updatedMap = _map.Clone() as T;
+         T updatedMap = _map.Clone<T>();
 
          foreach ( ICell cell in _map.GetAllCells() )
          {
@@ -134,9 +134,9 @@ namespace RogueSharp.MapCreation
          _map = updatedMap;
       }
 
-      private void CellularAutomaNearestNeighborsAlgorithm()
+      private void CellularAutomataNearestNeighborsAlgorithm()
       {
-         var updatedMap = _map.Clone() as T;
+         T updatedMap = _map.Clone<T>();
 
          foreach ( ICell cell in _map.GetAllCells() )
          {
@@ -182,7 +182,7 @@ namespace RogueSharp.MapCreation
 
       private void ConnectCaves()
       {
-         var floodFillAnalyzer = new FloodFillAnalyzer(_map);
+         var floodFillAnalyzer = new FloodFillAnalyzer( _map );
          List<MapSection> mapSections = floodFillAnalyzer.GetMapSections();
          var unionFind = new UnionFind( mapSections.Count );
          while ( unionFind.Count > 1 )
@@ -215,7 +215,7 @@ namespace RogueSharp.MapCreation
       {
          MapSection start = mapSections[mapSectionIndex];
          int closestIndex = mapSectionIndex;
-         int distance = Int32.MaxValue;
+         int distance = int.MaxValue;
          for ( int i = 0; i < mapSections.Count; i++ )
          {
             if ( i == mapSectionIndex )
@@ -258,7 +258,7 @@ namespace RogueSharp.MapCreation
             _map = map;
             _mapSections = new List<MapSection>();
             _visited = new bool[_map.Height][];
-            for (int i = 0; i < _visited.Length; i++)
+            for ( int i = 0; i < _visited.Length; i++ )
             {
                _visited[i] = new bool[_map.Width];
             }
@@ -269,7 +269,7 @@ namespace RogueSharp.MapCreation
             IEnumerable<ICell> cells = _map.GetAllCells();
             foreach ( ICell cell in cells )
             {
-               MapSection section = Visit(cell);
+               MapSection section = Visit( cell );
                if ( section.Cells.Count > 0 )
                {
                   _mapSections.Add( section );
@@ -279,11 +279,11 @@ namespace RogueSharp.MapCreation
             return _mapSections;
          }
 
-         private MapSection Visit(ICell cell)
+         private MapSection Visit( ICell cell )
          {
-            Stack<ICell> stack = new Stack<ICell>(new List<ICell>());
-            MapSection mapsection = new MapSection();
-            stack.Push(cell);
+            Stack<ICell> stack = new Stack<ICell>( new List<ICell>() );
+            MapSection mapSection = new MapSection();
+            stack.Push( cell );
             while ( stack.Count != 0 )
             {
                cell = stack.Pop();
@@ -291,9 +291,9 @@ namespace RogueSharp.MapCreation
                {
                   continue;
                }
-               mapsection.AddCell( cell );
+               mapSection.AddCell( cell );
                _visited[cell.Y][cell.X] = true;
-               foreach ( ICell neighbor in GetNeighbors(cell) )
+               foreach ( ICell neighbor in GetNeighbors( cell ) )
                {
                   if ( cell.IsWalkable == neighbor.IsWalkable && !_visited[neighbor.Y][neighbor.X] )
                   {
@@ -301,16 +301,16 @@ namespace RogueSharp.MapCreation
                   }
                }
             }
-            return mapsection;
+            return mapSection;
          }
 
          private ICell GetCell( int x, int y )
          {
-            if (x < 0 || y < 0)
+            if ( x < 0 || y < 0 )
             {
                return null;
             }
-            if (x >= _map.Width || y >= _map.Height)
+            if ( x >= _map.Width || y >= _map.Height )
             {
                return null;
             }
@@ -319,10 +319,10 @@ namespace RogueSharp.MapCreation
 
          private IEnumerable<ICell> GetNeighbors( ICell cell )
          {
-            List<ICell> neighbors = new List<ICell>(8);
-            foreach (int[] offset in _offsets)
+            List<ICell> neighbors = new List<ICell>( 8 );
+            foreach ( int[] offset in _offsets )
             {
-               var neighbor = GetCell(cell.X + offset[0], cell.Y + offset[1]);
+               ICell neighbor = GetCell( cell.X + offset[0], cell.Y + offset[1] );
                if ( neighbor == null )
                {
                   continue;
@@ -330,7 +330,7 @@ namespace RogueSharp.MapCreation
                neighbors.Add( neighbor );
             }
 
-             return neighbors;
+            return neighbors;
          }
       }
 
@@ -341,13 +341,7 @@ namespace RogueSharp.MapCreation
          private int _right;
          private int _left;
 
-         public Rectangle Bounds
-         {
-            get
-            {
-               return new Rectangle( _left, _top, _right - _left + 1, _bottom - _top + 1 );
-            }
-         }
+         public Rectangle Bounds => new Rectangle( _left, _top, _right - _left + 1, _bottom - _top + 1 );
 
          public HashSet<ICell> Cells { get; private set; }
 
@@ -368,25 +362,25 @@ namespace RogueSharp.MapCreation
          {
             if ( cell.X > _right )
             {
-              _right = cell.X;
+               _right = cell.X;
             }
             if ( cell.X < _left )
             {
-              _left = cell.X;
+               _left = cell.X;
             }
             if ( cell.Y > _bottom )
             {
-              _bottom = cell.Y;
+               _bottom = cell.Y;
             }
             if ( cell.Y < _top )
             {
-              _top = cell.Y;
+               _top = cell.Y;
             }
          }
 
          public override string ToString()
          {
-            return string.Format( "Bounds: {0}", Bounds );
+            return $"Bounds: {Bounds}";
          }
       }
    }

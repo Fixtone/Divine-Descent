@@ -10,7 +10,6 @@ public class DungeonMapGenerator
     private readonly int _roomMaxSize;
     private readonly int _roomMinSize;
     private readonly RogueSharp.Random.IRandom _random;
-
     private DungeonMap _map;
 
     public DungeonMapGenerator(int width, int height, int maxRooms, int roomMaxSize, int roomMinSize, RogueSharp.Random.IRandom random)
@@ -26,7 +25,7 @@ public class DungeonMapGenerator
     public DungeonMap CreateMap()
     {
         RandomRoomsMapCreationStrategy<DungeonMap> mapCreationStrategy = new RandomRoomsMapCreationStrategy<DungeonMap>(_width, _height, _maxRooms, _roomMaxSize, _roomMinSize, _random);
-        _map = DungeonMap.Create(mapCreationStrategy);
+        _map = mapCreationStrategy.CreateMap();
 
         PlacePlayer();
 

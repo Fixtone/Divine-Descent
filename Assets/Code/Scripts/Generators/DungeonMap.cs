@@ -7,26 +7,6 @@ using UnityEngine;
 
 public class DungeonMap : GameMap
 {
-    public List<Rectangle> Rooms;
-
-    public DungeonMap()
-    {
-        Rooms = new List<Rectangle>();
-    }
-
-    public static DungeonMap Create(RandomRoomsMapCreationStrategy<DungeonMap> mapCreationStrategy)
-    {
-        if (mapCreationStrategy == null)
-        {
-            throw new ArgumentNullException("mapCreationStrategy", "Map creation strategy cannot be null");
-        }
-
-        DungeonMap dungeonMap = mapCreationStrategy.CreateMap();
-        dungeonMap.Rooms = mapCreationStrategy.Rooms;
-
-        return dungeonMap;
-    }
-
     public override void UpdatePlayerFieldOfView(Player player)
     {
         // Compute the field-of-view based on the player's location and awareness

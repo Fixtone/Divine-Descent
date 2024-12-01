@@ -18,7 +18,7 @@ namespace RogueSharp.Random
       private System.Random _random;
       private long _numberGenerated;
       private double _nextGaussian;
-      private bool _uselast = true;
+      private bool _useLast = true;
 
       /// <summary>
       /// Constructs a new Gaussian pseudo-random number generator 
@@ -61,7 +61,7 @@ namespace RogueSharp.Random
       {
          _numberGenerated++;
          double deviations = 3.5;
-         var r = (int) BoxMuller( minValue + ( maxValue - minValue ) / 2.0, ( maxValue - minValue ) / 2.0 / deviations );
+         var r = (int) BoxMuller( minValue + ( ( maxValue - minValue ) / 2.0 ), ( maxValue - minValue ) / 2.0 / deviations );
          if ( r > maxValue )
          {
             r = maxValue;
@@ -113,14 +113,14 @@ namespace RogueSharp.Random
       {
          if ( state == null )
          {
-            throw new ArgumentNullException( "state", "RandomState cannot be null" );
+            throw new ArgumentNullException( nameof( state ), "RandomState cannot be null" );
          }
 
          _seed = state.Seed[0];
          _random = new System.Random( _seed );
          _numberGenerated = default( long );
          _nextGaussian = default( double );
-         _uselast = true;
+         _useLast = true;
          for ( long i = 0; i < state.NumberGenerated; i++ )
          {
             Next( 1 );
@@ -128,9 +128,9 @@ namespace RogueSharp.Random
       }
       private double BoxMuller()
       {
-         if ( _uselast )
+         if ( _useLast )
          {
-            _uselast = false;
+            _useLast = false;
             return _nextGaussian;
          }
          else
@@ -138,22 +138,22 @@ namespace RogueSharp.Random
             double v1, v2, s;
             do
             {
-               v1 = 2.0 * _random.NextDouble() - 1.0;
-               v2 = 2.0 * _random.NextDouble() - 1.0;
-               s = v1 * v1 + v2 * v2;
+               v1 = ( 2.0 * _random.NextDouble() ) - 1.0;
+               v2 = ( 2.0 * _random.NextDouble() ) - 1.0;
+               s = ( v1 * v1 ) + ( v2 * v2 );
             }
             while ( s >= 1.0 || s == 0 );
 
-            s = Math.Sqrt( ( -2.0 * Math.Log( s ) ) / s );
+            s = Math.Sqrt( -2.0 * Math.Log( s ) / s );
 
             _nextGaussian = v2 * s;
-            _uselast = true;
+            _useLast = true;
             return v1 * s;
          }
       }
       private double BoxMuller( double mean, double standardDeviation )
       {
-         return mean + BoxMuller() * standardDeviation;
+         return mean + ( BoxMuller() * standardDeviation );
       }
    }
 }

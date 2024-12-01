@@ -31,7 +31,12 @@ namespace RogueSharp
       /// <param name="height">How many Cells tall the Map will be</param>
       public Map( int width, int height )
       {
-         Initialize( width, height );
+         Width = width;
+         Height = height;
+         _isTransparent = new bool[width, height];
+         _isWalkable = new bool[width, height];
+         _isExplored = new bool[width, height];
+         _fieldOfView = new FieldOfView( this );
       }
 
       /// <summary>
@@ -58,15 +63,12 @@ namespace RogueSharp
          get; private set;
       }
 
-      /// <summary>
-      /// Create a new map with the properties of all Cells set to false
-      /// </summary>
-      /// <remarks>
-      /// This is basically a solid stone map that would then need to be modified to have interesting features
-      /// </remarks>
-      /// <param name="width">How many Cells wide the Map will be</param>
-      /// <param name="height">How many Cells tall the Map will be</param>
-      public void Initialize( int width, int height )
+      public List<Rectangle> Rooms
+      {
+         get; private set;
+      }
+
+      public virtual void Initialize( int width, int height )
       {
          Width = width;
          Height = height;
@@ -180,6 +182,11 @@ namespace RogueSharp
          SetCellProperties( x, y, isTransparent, isWalkable, false );
       }
 
+      public void SetRooms(List<Rectangle> rooms)
+      {
+         Rooms = rooms;
+      }
+
       /// <summary>
       /// Sets the properties of all Cells in the Map to be transparent and walkable
       /// </summary>
@@ -202,12 +209,13 @@ namespace RogueSharp
       }
 
       /// <summary>
-      /// Create and return a deep copy of an existing Map
+      /// Create and return a deep copy of an existing Map.
+      /// Override when a derived class has additional properties to clone.
       /// </summary>
-      /// <returns>IMap deep copy of the original Map</returns>
-      public IMap Clone()
+      /// <returns>T of type IMap which is a deep copy of the original Map</returns>
+      public virtual T Clone<T>() where T : IMap, new()
       {
-         var map = new Map( Width, Height );
+         T map = Create( new BorderOnlyMapCreationStrategy<T>( Width, Height ) );
          foreach ( ICell cell in GetAllCells() )
          {
             map.SetCellProperties( cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, cell.IsExplored );
@@ -236,7 +244,7 @@ namespace RogueSharp
       {
          if ( sourceMap == null )
          {
-            throw new ArgumentNullException( "sourceMap", "Source map cannot be null" );
+            throw new ArgumentNullException( nameof( sourceMap ), "Source map cannot be null" );
          }
 
          if ( sourceMap.Width + left > Width )
@@ -368,7 +376,7 @@ namespace RogueSharp
       {
          var discovered = new HashSet<int>();
 
-         int d = ( 5 - radius * 4 ) / 4;
+         int d = ( 5 - ( radius * 4 ) ) / 4;
          int x = 0;
          int y = radius;
 
@@ -405,11 +413,11 @@ namespace RogueSharp
 
             if ( d < 0 )
             {
-               d += 2 * x + 1;
+               d += ( 2 * x ) + 1;
             }
             else
             {
-               d += 2 * ( x - y ) + 1;
+               d += ( 2 * ( x - y ) ) + 1;
                y--;
             }
             x++;
@@ -436,8 +444,7 @@ namespace RogueSharp
          {
             for ( int j = distance; j >= 0 + i; j-- )
             {
-               ICell cell;
-               if ( AddToHashSet( discovered, Math.Max( xMin, xCenter - i ), Math.Min( yMax, yCenter + distance - j ), out cell ) )
+               if ( AddToHashSet( discovered, Math.Max( xMin, xCenter - i ), Math.Min( yMax, yCenter + distance - j ), out ICell cell ) )
                {
                   yield return cell;
                }
@@ -481,6 +488,30 @@ namespace RogueSharp
       }
 
       /// <summary>
+      /// Get an IEnumerable of Cells in a rectangle area
+      /// </summary>
+      /// <param name="top">The top row of the rectangle </param>
+      /// <param name="left">The left column of the rectangle</param>
+      /// <param name="width">The width of the rectangle</param>
+      /// <param name="height">The height of the rectangle</param>
+      /// <returns>IEnumerable of Cells in a rectangle area</returns>
+      public IEnumerable<ICell> GetCellsInRectangle( int top, int left, int width, int height )
+      {
+         int xMin = Math.Max( 0, left );
+         int xMax = Math.Min( Width - 1, left + width );
+         int yMin = Math.Max( 0, top );
+         int yMax = Math.Min( Height - 1, top + height );
+
+         for ( int y = yMin; y < yMax; y++ )
+         {
+            for ( int x = xMin; x < xMax; x++ )
+            {
+               yield return GetCell( x, y );
+            }
+         }
+      }
+
+      /// <summary>
       /// Get an IEnumerable of outermost border Cells in a circle around the center Cell up to the specified radius using Bresenham's midpoint circle algorithm
       /// </summary>
       /// <seealso href="https://en.wikipedia.org/wiki/Midpoint_circle_algorithm">Based on Bresenham's midpoint circle algorithm</seealso>
@@ -492,53 +523,54 @@ namespace RogueSharp
       {
          var discovered = new HashSet<int>();
 
-         int d = ( 5 - radius * 4 ) / 4;
+         int d = ( 5 - ( radius * 4 ) ) / 4;
          int x = 0;
          int y = radius;
 
+         ICell centerCell = GetCell( xCenter, yCenter );
+
          do
          {
-            ICell cell;
-            if ( AddToHashSet( discovered, ClampX( xCenter + x ), ClampY( yCenter + y ), out cell ) )
+            if ( AddToHashSet( discovered, ClampX( xCenter + x ), ClampY( yCenter + y ), centerCell, out ICell cell ) )
             {
                yield return cell;
             }
-            if ( AddToHashSet( discovered, ClampX( xCenter + x ), ClampY( yCenter - y ), out cell ) )
+            if ( AddToHashSet( discovered, ClampX( xCenter + x ), ClampY( yCenter - y ), centerCell, out cell ) )
             {
                yield return cell;
             }
-            if ( AddToHashSet( discovered, ClampX( xCenter - x ), ClampY( yCenter + y ), out cell ) )
+            if ( AddToHashSet( discovered, ClampX( xCenter - x ), ClampY( yCenter + y ), centerCell, out cell ) )
             {
                yield return cell;
             }
-            if ( AddToHashSet( discovered, ClampX( xCenter - x ), ClampY( yCenter - y ), out cell ) )
+            if ( AddToHashSet( discovered, ClampX( xCenter - x ), ClampY( yCenter - y ), centerCell, out cell ) )
             {
                yield return cell;
             }
-            if ( AddToHashSet( discovered, ClampX( xCenter + y ), ClampY( yCenter + x ), out cell ) )
+            if ( AddToHashSet( discovered, ClampX( xCenter + y ), ClampY( yCenter + x ), centerCell, out cell ) )
             {
                yield return cell;
             }
-            if ( AddToHashSet( discovered, ClampX( xCenter + y ), ClampY( yCenter - x ), out cell ) )
+            if ( AddToHashSet( discovered, ClampX( xCenter + y ), ClampY( yCenter - x ), centerCell, out cell ) )
             {
                yield return cell;
             }
-            if ( AddToHashSet( discovered, ClampX( xCenter - y ), ClampY( yCenter + x ), out cell ) )
+            if ( AddToHashSet( discovered, ClampX( xCenter - y ), ClampY( yCenter + x ), centerCell, out cell ) )
             {
                yield return cell;
             }
-            if ( AddToHashSet( discovered, ClampX( xCenter - y ), ClampY( yCenter - x ), out cell ) )
+            if ( AddToHashSet( discovered, ClampX( xCenter - y ), ClampY( yCenter - x ), centerCell, out cell ) )
             {
                yield return cell;
             }
 
             if ( d < 0 )
             {
-               d += 2 * x + 1;
+               d += ( 2 * x ) + 1;
             }
             else
             {
-               d += 2 * ( x - y ) + 1;
+               d += ( 2 * ( x - y ) ) + 1;
                y--;
             }
             x++;
@@ -561,30 +593,30 @@ namespace RogueSharp
          int yMin = Math.Max( 0, yCenter - distance );
          int yMax = Math.Min( Height - 1, yCenter + distance );
 
-         ICell cell;
-         if ( AddToHashSet( discovered, xCenter, yMin, out cell ) )
+         ICell centerCell = GetCell( xCenter, yCenter );
+         if ( AddToHashSet( discovered, xCenter, yMin, centerCell, out ICell cell ) )
          {
             yield return cell;
          }
-         if ( AddToHashSet( discovered, xCenter, yMax, out cell ) )
+         if ( AddToHashSet( discovered, xCenter, yMax, centerCell, out cell ) )
          {
             yield return cell;
          }
          for ( int i = 1; i <= distance; i++ )
          {
-            if ( AddToHashSet( discovered, Math.Max( xMin, xCenter - i ), Math.Min( yMax, yCenter + distance - i ), out cell ) )
+            if ( AddToHashSet( discovered, Math.Max( xMin, xCenter - i ), Math.Min( yMax, yCenter + distance - i ), centerCell, out cell ) )
             {
                yield return cell;
             }
-            if ( AddToHashSet( discovered, Math.Max( xMin, xCenter - i ), Math.Max( yMin, yCenter - distance + i ), out cell ) )
+            if ( AddToHashSet( discovered, Math.Max( xMin, xCenter - i ), Math.Max( yMin, yCenter - distance + i ), centerCell, out cell ) )
             {
                yield return cell;
             }
-            if ( AddToHashSet( discovered, Math.Min( xMax, xCenter + i ), Math.Min( yMax, yCenter + distance - i ), out cell ) )
+            if ( AddToHashSet( discovered, Math.Min( xMax, xCenter + i ), Math.Min( yMax, yCenter + distance - i ), centerCell, out cell ) )
             {
                yield return cell;
             }
-            if ( AddToHashSet( discovered, Math.Min( xMax, xCenter + i ), Math.Max( yMin, yCenter - distance + i ), out cell ) )
+            if ( AddToHashSet( discovered, Math.Min( xMax, xCenter + i ), Math.Max( yMin, yCenter - distance + i ), centerCell, out cell ) )
             {
                yield return cell;
             }
@@ -604,17 +636,23 @@ namespace RogueSharp
          int xMax = Math.Min( Width - 1, xCenter + distance );
          int yMin = Math.Max( 0, yCenter - distance );
          int yMax = Math.Min( Height - 1, yCenter + distance );
+         List<ICell> borderCells = new List<ICell>();
 
          for ( int x = xMin; x <= xMax; x++ )
          {
-            yield return GetCell( x, yMin );
-            yield return GetCell( x, yMax );
+            borderCells.Add( GetCell( x, yMin ) );
+            borderCells.Add( GetCell( x, yMax ) );
          }
          for ( int y = yMin + 1; y <= yMax - 1; y++ )
          {
-            yield return GetCell( xMin, y );
-            yield return GetCell( xMax, y );
+            borderCells.Add( GetCell( xMin, y ) );
+            borderCells.Add( GetCell( xMax, y ) );
          }
+
+         ICell centerCell = GetCell( xCenter, yCenter );
+         borderCells.Remove( centerCell );
+
+         return borderCells;
       }
 
       /// <summary>
@@ -668,7 +706,7 @@ namespace RogueSharp
       /// - `o`: `Cell` is transparent and in field-of-view (but not walkable)
       /// - `#`: `Cell` is in field-of-view (but not transparent or walkable)
       /// </summary>
-      /// <param name="useFov">True if field-of-view calculations will be used when creating the string represenation of the Map. False otherwise</param>
+      /// <param name="useFov">True if field-of-view calculations will be used when creating the string representation of the Map. False otherwise</param>
       /// <returns>A string representation of the map using special symbols to denote Cell properties</returns>
       public string ToString( bool useFov )
       {
@@ -691,16 +729,18 @@ namespace RogueSharp
       /// Get a MapState POCO which represents this Map and can be easily serialized
       /// Use Restore with the MapState to get back a full Map
       /// </summary>
-      /// <returns>Mapstate POCO (Plain Old C# Object) which represents this Map and can be easily serialized</returns>
+      /// <returns>MapState POCO (Plain Old C# Object) which represents this Map and can be easily serialized</returns>
       public MapState Save()
       {
-         var mapState = new MapState();
-         mapState.Width = Width;
-         mapState.Height = Height;
-         mapState.Cells = new MapState.CellProperties[Width * Height];
+         var mapState = new MapState
+         {
+            Width = Width,
+            Height = Height,
+            Cells = new MapState.CellProperties[Width * Height]
+         };
          foreach ( ICell cell in GetAllCells() )
          {
-            var cellProperties = MapState.CellProperties.None;
+            MapState.CellProperties cellProperties = MapState.CellProperties.None;
             if ( cell.IsInFov )
             {
                cellProperties |= MapState.CellProperties.Visible;
@@ -717,7 +757,7 @@ namespace RogueSharp
             {
                cellProperties |= MapState.CellProperties.Explored;
             }
-            mapState.Cells[cell.Y * Width + cell.X] = cellProperties;
+            mapState.Cells[( cell.Y * Width ) + cell.X] = cellProperties;
          }
          return mapState;
       }
@@ -725,13 +765,13 @@ namespace RogueSharp
       /// <summary>
       /// Restore the state of this Map from the specified MapState
       /// </summary>
-      /// <param name="state">Mapstate POCO (Plain Old C# Object) which represents this Map and can be easily serialized and deserialized</param>
+      /// <param name="state">MapState POCO (Plain Old C# Object) which represents this Map and can be easily serialized and deserialized</param>
       /// <exception cref="ArgumentNullException">Thrown on null map state</exception>
       public void Restore( MapState state )
       {
          if ( state == null )
          {
-            throw new ArgumentNullException( "state", "Map state cannot be null" );
+            throw new ArgumentNullException( nameof( state ), "Map state cannot be null" );
          }
 
          var inFov = new HashSet<int>();
@@ -739,14 +779,14 @@ namespace RogueSharp
          Initialize( state.Width, state.Height );
          foreach ( ICell cell in GetAllCells() )
          {
-            MapState.CellProperties cellProperties = state.Cells[cell.Y * Width + cell.X];
-            if ( cellProperties.IsFlagSet( MapState.CellProperties.Visible ) )
+            MapState.CellProperties cellProperties = state.Cells[( cell.Y * Width ) + cell.X];
+            if ( cellProperties.HasFlag( MapState.CellProperties.Visible ) )
             {
                inFov.Add( IndexFor( cell.X, cell.Y ) );
             }
-            _isTransparent[cell.X, cell.Y] = cellProperties.IsFlagSet( MapState.CellProperties.Transparent );
-            _isWalkable[cell.X, cell.Y] = cellProperties.IsFlagSet( MapState.CellProperties.Walkable );
-            _isExplored[cell.X, cell.Y] = cellProperties.IsFlagSet( MapState.CellProperties.Explored );
+            _isTransparent[cell.X, cell.Y] = cellProperties.HasFlag( MapState.CellProperties.Transparent );
+            _isWalkable[cell.X, cell.Y] = cellProperties.HasFlag( MapState.CellProperties.Walkable );
+            _isExplored[cell.X, cell.Y] = cellProperties.HasFlag( MapState.CellProperties.Explored );
          }
 
          _fieldOfView = new FieldOfView( this, inFov );
@@ -762,11 +802,11 @@ namespace RogueSharp
       /// <param name="mapCreationStrategy">A class that implements IMapCreationStrategy and has CreateMap method which defines algorithms for creating interesting Maps</param>
       /// <returns>Map created by calling CreateMap from the specified IMapCreationStrategy</returns>
       /// <exception cref="ArgumentNullException">Thrown on null map creation strategy</exception>
-      public static Map Create( IMapCreationStrategy<Map> mapCreationStrategy )
+      public static T Create<T>( IMapCreationStrategy<T> mapCreationStrategy ) where T : IMap
       {
          if ( mapCreationStrategy == null )
          {
-            throw new ArgumentNullException( "mapCreationStrategy", "Map creation strategy cannot be null" );
+            throw new ArgumentNullException( nameof( mapCreationStrategy ), "Map creation strategy cannot be null" );
          }
 
          return mapCreationStrategy.CreateMap();
@@ -806,7 +846,7 @@ namespace RogueSharp
       {
          if ( cell == null )
          {
-            throw new ArgumentNullException( "cell", "Cell cannot be null" );
+            throw new ArgumentNullException( nameof( cell ), "Cell cannot be null" );
          }
 
          return ( cell.Y * Width ) + cell.X;
@@ -815,6 +855,17 @@ namespace RogueSharp
       private bool AddToHashSet( HashSet<int> hashSet, int x, int y, out ICell cell )
       {
          cell = GetCell( x, y );
+         return hashSet.Add( IndexFor( cell ) );
+      }
+
+      private bool AddToHashSet( HashSet<int> hashSet, int x, int y, ICell centerCell, out ICell cell )
+      {
+         cell = GetCell( x, y );
+         if ( cell.Equals( centerCell ) )
+         {
+            return false;
+         }
+
          return hashSet.Add( IndexFor( cell ) );
       }
 
@@ -837,25 +888,6 @@ namespace RogueSharp
       public override string ToString()
       {
          return ToString( false );
-      }
-   }
-
-   public static class EnumExtensions
-   {
-      private static void CheckIsEnum<T>( bool withFlags )
-      {
-         if ( !typeof( T ).IsEnum )
-            throw new ArgumentException( string.Format( "Type '{0}' is not an enum", typeof( T ).FullName ) );
-         if ( withFlags && !Attribute.IsDefined( typeof( T ), typeof( FlagsAttribute ) ) )
-            throw new ArgumentException( string.Format( "Type '{0}' doesn't have the 'Flags' attribute", typeof( T ).FullName ) );
-      }
-
-      public static bool IsFlagSet<T>( this T value, T flag ) where T : struct
-      {
-         CheckIsEnum<T>( true );
-         long lValue = Convert.ToInt64( value );
-         long lFlag = Convert.ToInt64( flag );
-         return ( lValue & lFlag ) != 0;
       }
    }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using UnityEngine;
+using RogueSharp.MapCreation;
 
 namespace RogueSharp
 {
@@ -31,6 +31,11 @@ namespace RogueSharp
       /// Cells with an Y value of 0 will be the topmost Cells
       /// </remarks>
       int Height
+      {
+         get;
+      }
+
+      List<Rectangle> Rooms
       {
          get;
       }
@@ -129,6 +134,8 @@ namespace RogueSharp
       /// <param name="isWalkable">True if a character could walk across the Cell normally. False otherwise</param>
       void SetCellProperties( int x, int y, bool isTransparent, bool isWalkable );
 
+      void SetRooms( List<Rectangle> rooms );
+
       /// <summary>
       /// Sets the properties of all Cells in the Map to be transparent and walkable
       /// </summary>
@@ -144,8 +151,8 @@ namespace RogueSharp
       /// <summary>
       /// Create and return a deep copy of an existing Map
       /// </summary>
-      /// <returns>IMap deep copy of the original Map</returns>
-      IMap Clone();
+      /// <returns>T of type IMap which is a deep copy of the original Map</returns>
+      T Clone<T>() where T : IMap, new();
 
       /// <summary>
       /// Copies the Cell properties of a smaller source Map into this destination Map at location (0,0)
@@ -235,6 +242,16 @@ namespace RogueSharp
       IEnumerable<ICell> GetCellsInSquare( int xCenter, int yCenter, int distance );
 
       /// <summary>
+      /// Get an IEnumerable of Cells in a rectangle area
+      /// </summary>
+      /// <param name="top">The top row of the rectangle </param>
+      /// <param name="left">The left column of the rectangle</param>
+      /// <param name="width">The width of the rectangle</param>
+      /// <param name="height">The height of the rectangle</param>
+      /// <returns>IEnumerable of Cells in a rectangle area</returns>
+      IEnumerable<ICell> GetCellsInRectangle( int top, int left, int width, int height );
+
+      /// <summary>
       /// Get an IEnumerable of outermost border Cells in a circle around the center Cell up to the specified radius using Bresenham's midpoint circle algorithm
       /// </summary>
       /// <seealso href="https://en.wikipedia.org/wiki/Midpoint_circle_algorithm">Based on Bresenham's midpoint circle algorithm</seealso>
@@ -292,7 +309,7 @@ namespace RogueSharp
       /// - `o`: `Cell` is transparent and in field-of-view (but not walkable)
       /// - `#`: `Cell` is in field-of-view (but not transparent or walkable)
       /// </summary>
-      /// <param name="useFov">True if field-of-view calculations will be used when creating the string represenation of the Map. False otherwise</param>
+      /// <param name="useFov">True if field-of-view calculations will be used when creating the string representation of the Map. False otherwise</param>
       /// <returns>A string representation of the map using special symbols to denote Cell properties</returns>
       string ToString( bool useFov );
 
@@ -300,13 +317,13 @@ namespace RogueSharp
       /// Get a MapState POCO which represents this Map and can be easily serialized
       /// Use Restore with the MapState to get back a full Map
       /// </summary>
-      /// <returns>Mapstate POCO (Plain Old C# Object) which represents this Map and can be easily serialized</returns>
+      /// <returns>MapState POCO (Plain Old C# Object) which represents this Map and can be easily serialized</returns>
       MapState Save();
 
       /// <summary>
       /// Restore the state of this Map from the specified MapState
       /// </summary>
-      /// <param name="state">Mapstate POCO (Plain Old C# Object) which represents this Map and can be easily serialized and deserialized</param>
+      /// <param name="state">MapState POCO (Plain Old C# Object) which represents this Map and can be easily serialized and deserialized</param>
       void Restore( MapState state );
 
       /// <summary>
@@ -336,6 +353,7 @@ namespace RogueSharp
    /// A class representing the state of a Map which can be used to Restore a Map to a previously Saved state
    /// This POCO (Plain Old C# Object) can be easily serialized and deserialized
    /// </summary>
+   
    [Serializable]
    public class MapState
    {
@@ -371,26 +389,16 @@ namespace RogueSharp
       /// How many Cells wide the Map is
       /// </summary>
       public int Width;
-      //{
-      //   get; set;
-      //}
 
       /// <summary>
       /// How many Cells tall the Map is
       /// </summary>
       public int Height;
-      //{
-      //   get; set;
-      //}
 
       /// <summary>
       /// An array of the Flags Enumeration of CellProperties for each Cell in the Map.
-      /// The index of the array corresponds to the location of the Cell within the Map using the forumla: index = ( y * Width ) + x
+      /// The index of the array corresponds to the location of the Cell within the Map using the formula: index = ( y * Width ) + x
       /// </summary>
-
       public CellProperties[] Cells;
-      //{
-      //   get; set;
-      //}
    }
 }

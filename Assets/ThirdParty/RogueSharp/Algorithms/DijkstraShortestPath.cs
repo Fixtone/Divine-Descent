@@ -30,14 +30,14 @@ namespace RogueSharp.Algorithms
       {
          if ( graph == null )
          {
-            throw new ArgumentNullException( "graph", "EdgeWeightedDigraph cannot be null" );
+            throw new ArgumentNullException( nameof( graph ), "EdgeWeightedDigraph cannot be null" );
          }
 
          foreach ( DirectedEdge edge in graph.Edges() )
          {
             if ( edge.Weight < 0 )
             {
-               throw new ArgumentOutOfRangeException( string.Format( "Edge: '{0}' has negative weight", edge ) );
+               throw new ArgumentOutOfRangeException( $"Edge: '{edge}' has negative weight" );
             }
          }
 
@@ -45,7 +45,7 @@ namespace RogueSharp.Algorithms
          _edgeTo = new DirectedEdge[graph.NumberOfVertices];
          for ( int v = 0; v < graph.NumberOfVertices; v++ )
          {
-            _distanceTo[v] = Double.PositiveInfinity;
+            _distanceTo[v] = double.PositiveInfinity;
          }
          _distanceTo[sourceVertex] = 0.0;
 
@@ -69,11 +69,11 @@ namespace RogueSharp.Algorithms
 
       /// <summary>
       /// Returns an IEnumerable of DirectedEdges representing a shortest path from the specified sourceVertex to the specified destinationVertex
-      /// This is more efficent than creating a new DijkstraShorestPath instance and calling PathTo( destinationVertex ) when we only
+      /// This is more efficient than creating a new DijkstraShortestPath instance and calling PathTo( destinationVertex ) when we only
       /// want a single path from Source to Destination and don't want many paths from the source to multiple different destinations.
       /// </summary>
       /// <param name="graph">The edge-weighted directed graph</param>
-      /// <param name="sourceVertex">The source vertext to find a shortest path from</param>
+      /// <param name="sourceVertex">The source vertex to find a shortest path from</param>
       /// <param name="destinationVertex">The destination vertex to find a shortest path to</param>
       /// <returns>IEnumerable of DirectedEdges representing a shortest path from the sourceVertex to the specified destinationVertex</returns>
       public static IEnumerable<DirectedEdge> FindPath( EdgeWeightedDigraph graph, int sourceVertex, int destinationVertex )
@@ -140,7 +140,6 @@ namespace RogueSharp.Algorithms
          return path;
       }
 
-      // TODO: This method should be private and should be called from the bottom of the constructor
       /// <summary>
       /// check optimality conditions:
       /// </summary>
@@ -152,7 +151,7 @@ namespace RogueSharp.Algorithms
       {
          if ( graph == null )
          {
-            throw new ArgumentNullException( "graph", "EdgeWeightedDigraph cannot be null" );
+            throw new ArgumentNullException( nameof( graph ), "EdgeWeightedDigraph cannot be null" );
          }
 
          if ( _distanceTo[sourceVertex] != 0.0 || _edgeTo[sourceVertex] != null )

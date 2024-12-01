@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace RogueSharp.Algorithms
 {
    /// <summary>
-   /// The EdgeWeightedDigrpah class represents an edge-weighted directed graph of vertices named 0 through V-1, where each directed edge
+   /// The EdgeWeightedDigraph class represents an edge-weighted directed graph of vertices named 0 through V-1, where each directed edge
    /// is of type DirectedEdge and has real-valued weight.
    /// </summary>
    /// <seealso href="http://algs4.cs.princeton.edu/44sp/EdgeWeightedDigraph.java.html">EdgeWeightedDigraph class from Princeton University's Java Algorithms</seealso>
@@ -47,10 +48,11 @@ namespace RogueSharp.Algorithms
       {
          if ( edge == null )
          {
-            throw new ArgumentNullException( "edge", "DirectedEdge cannot be null" );
+            throw new ArgumentNullException( nameof( edge ), "DirectedEdge cannot be null" );
          }
 
          _adjacent[edge.From].AddLast( edge );
+         NumberOfEdges++;
       }
 
       /// <summary>
@@ -80,9 +82,9 @@ namespace RogueSharp.Algorithms
 
       /// <summary>
       /// Returns the number of directed edges incident from the specified vertex
-      /// This is known as the outdegree of the vertex
+      /// This is known as the out-degree of the vertex
       /// </summary>
-      /// <param name="vertex">The vertex to find find the outdegree of</param>
+      /// <param name="vertex">The vertex to find find the out-degree of</param>
       /// <returns>The number of directed edges incident from the specified vertex</returns>
       public int OutDegree( int vertex )
       {
@@ -98,15 +100,18 @@ namespace RogueSharp.Algorithms
       public override string ToString()
       {
          var formattedString = new StringBuilder();
-         formattedString.AppendFormat( "{0} vertices, {1} edges {2}", NumberOfVertices, NumberOfEdges, Environment.NewLine );
+         formattedString.AppendFormat( CultureInfo.CurrentCulture, "{0} vertices, {1} edges{2}", NumberOfVertices, NumberOfEdges, Environment.NewLine );
          for ( int v = 0; v < NumberOfVertices; v++ )
          {
-            formattedString.AppendFormat( "{0}: ", v );
+            formattedString.AppendFormat( CultureInfo.CurrentCulture, "{0}:", v );
             foreach ( DirectedEdge edge in _adjacent[v] )
             {
-               formattedString.AppendFormat( "{0} ", edge.To );
+               formattedString.AppendFormat( CultureInfo.CurrentCulture, " {0}", edge.To );
             }
-            formattedString.AppendLine();
+            if ( v < NumberOfVertices - 1 )
+            {
+               formattedString.AppendLine();
+            }
          }
          return formattedString.ToString();
       }

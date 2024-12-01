@@ -2,14 +2,14 @@
 
 public class CommandManager : MonoBehaviour
 {
-    public static CommandManager instance;
+    public static CommandManager Instance;
 
     private void Awake()
     {
-        if (instance != null)
+        if (Instance != null)
             Destroy(gameObject);
         else
-            instance = this;
+            Instance = this;
 
         DontDestroyOnLoad(gameObject);
     }
@@ -73,7 +73,7 @@ public class CommandManager : MonoBehaviour
                 }
         }
 
-        if (MapManager.Instance.map.SetActorPosition(actor, x, y))
+        if (MapManager.Instance.currentMap.SetActorPosition(actor, x, y))
         {
             return true;
         }

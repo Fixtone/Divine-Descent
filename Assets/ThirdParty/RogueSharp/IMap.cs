@@ -336,6 +336,7 @@ namespace RogueSharp
    /// A class representing the state of a Map which can be used to Restore a Map to a previously Saved state
    /// This POCO (Plain Old C# Object) can be easily serialized and deserialized
    /// </summary>
+   [Serializable]
    public class MapState
    {
       /// <summary>

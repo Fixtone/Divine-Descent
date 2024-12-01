@@ -25,21 +25,29 @@ public class PlayerTurnState : BaseState
         base.UpdateState();
 
         bool didAction = false;
-        if (Input.GetKeyDown(KeyCode.Keypad6))
+        if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            CommandManager.instance.MoveActor(GameManager.Instance.player.GetComponent<Player>(), Direction.Right);
+            didAction = CommandManager.Instance.MoveActor(GameManager.Instance.player.GetComponent<Player>(), Direction.Right);
         }
-        else if (Input.GetKeyDown(KeyCode.Keypad4))
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            CommandManager.instance.MoveActor(GameManager.Instance.player.GetComponent<Player>(), Direction.Left);
+            didAction = CommandManager.Instance.MoveActor(GameManager.Instance.player.GetComponent<Player>(), Direction.Left);
         }
-        else if (Input.GetKeyDown(KeyCode.Keypad8))
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            CommandManager.instance.MoveActor(GameManager.Instance.player.GetComponent<Player>(), Direction.Up);
+            didAction = CommandManager.Instance.MoveActor(GameManager.Instance.player.GetComponent<Player>(), Direction.Up);
         }
-        else if (Input.GetKeyDown(KeyCode.Keypad2))
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            CommandManager.instance.MoveActor(GameManager.Instance.player.GetComponent<Player>(), Direction.Down);
+            didAction = CommandManager.Instance.MoveActor(GameManager.Instance.player.GetComponent<Player>(), Direction.Down);
+        }
+        else if(Input.GetKeyDown(KeyCode.S))
+        {
+            FileManager.Instance.SaveGame();
+        }
+        else if(Input.GetKeyDown(KeyCode.L))
+        {
+            FileManager.Instance.LoadGame();
         }
 
         if (didAction)

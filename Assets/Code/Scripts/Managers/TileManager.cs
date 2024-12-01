@@ -24,14 +24,25 @@ public class TileManager : MonoBehaviour
     /// </summary>
     public void Draw()
     {
-        Map currentMap = MapManager.Instance.map;
+        GameMap currentMap = MapManager.Instance.currentMap;
         for (int x = 0; x < currentMap.Width; x++)
         {
             for (int y = 0; y < currentMap.Height; y++)
             {
                 ICell cell = currentMap.GetCell(x, y);
-                string tileGraphic = cell.IsWalkable ? "Floor" : "Wall";
+                
+                string tileGraphic = "Unknown";
+                if(currentMap.PositionHasAnActor(x, y))
+                {
+                    tileGraphic = "Floor";
+                }
+                else
+                {
+                    tileGraphic = cell.IsWalkable ? "Floor" : "Wall";
+                }
+
                 string tileName = string.Format("Tiles/{0}/{1}", GameManager.Instance.TileSet, tileGraphic);
+                
                 Tile tile = Resources.Load(tileName) as Tile;
 
                 Color color = Color.white;
@@ -50,7 +61,7 @@ public class TileManager : MonoBehaviour
                 {
                     if (cell.IsExplored)
                     {
-                        color = new Color(tile.color.r, tile.color.g, tile.color.b, 125.0f);
+                        color = new Color(tile.color.r, tile.color.g, tile.color.b, 0.35f);
                     }
                     else
                     {

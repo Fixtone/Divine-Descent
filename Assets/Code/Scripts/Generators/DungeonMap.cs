@@ -30,7 +30,7 @@ public class DungeonMap : GameMap
     public override void UpdatePlayerFieldOfView(Player player)
     {
         // Compute the field-of-view based on the player's location and awareness
-        ComputeFov((int)player.transform.localPosition.x, (int)player.transform.localPosition.y, 10, /*player.Awareness*/ true);
+        ComputeFov((int)player.transform.localPosition.x, (int)player.transform.localPosition.y, 8, /*player.Awareness*/ true);
         // Mark all cells in field-of-view as having been explored
         foreach (Cell cell in GetAllCells())
         {
@@ -48,7 +48,7 @@ public class DungeonMap : GameMap
 
         SetActorPosition(playerComponent, (int)playerComponent.transform.localPosition.x, (int)playerComponent.transform.localPosition.y);
 
-        SchedulingManager.instance.Add(player.GetComponent<Player>());
+        SchedulingManager.Instance.Add(player.GetComponent<Player>());
     }
 
     public override void SetIsWalkable(int x, int y, bool isWalkable)
@@ -82,5 +82,23 @@ public class DungeonMap : GameMap
         }
 
         return false;
+    }
+
+    public override bool PositionHasAnActor(int x, int y)
+    {
+        return GameManager.Instance.player.transform.localPosition == new Vector3(x,y,0);
+    }
+
+    public override MapSave Serialize()
+    {
+        MapSave mapSave = new MapSave();
+        mapSave.MapState = Save();
+        
+        return mapSave;
+    }
+
+    public override void DeSerialize(MapSave mapSave)
+    {
+        Restore(mapSave.MapState);
     }
 }

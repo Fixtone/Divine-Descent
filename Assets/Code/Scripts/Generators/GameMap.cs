@@ -25,4 +25,18 @@ public class GameMap : Map
     {
         return false;
     }
+
+    public virtual bool PositionHasAnActor(int x, int y)
+    {
+        return false;
+    }
+
+    public virtual MapSave Serialize()
+    {
+        return new MapSave();
+    }
+
+    public virtual void DeSerialize(MapSave mapSave)
+    {
+    }
 }

@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class SchedulingManager : MonoBehaviour
 {
-    public static SchedulingManager instance;
+    public static SchedulingManager Instance;
 
     private int time = 0;
     private readonly SortedDictionary<int, List<IScheduleable>> scheduleables = new SortedDictionary<int, List<IScheduleable>>();
 
     private void Awake()
     {
-        if (instance != null)
+        if (Instance != null)
             Destroy(gameObject);
         else
-            instance = this;
+            Instance = this;
 
         DontDestroyOnLoad(gameObject);
     }

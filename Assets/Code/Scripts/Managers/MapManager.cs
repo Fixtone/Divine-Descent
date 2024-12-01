@@ -9,7 +9,7 @@ public class MapManager : MonoBehaviour
     public static MapManager Instance;
     #endregion
 
-    public GameMap map { get; private set; }
+    public GameMap currentMap { get; private set; }
 
     // Start is called before the first frame update
     private void Awake()
@@ -26,6 +26,16 @@ public class MapManager : MonoBehaviour
     public void GenerateNewMap()
     {
         DungeonMapGenerator mapGenerator = new DungeonMapGenerator(100, 50, 50, 12, 8, GameManager.WorldRandom);
-        map = mapGenerator.CreateMap();
+        currentMap = mapGenerator.CreateMap();
+    }
+
+    public MapSave SerializeCurrentMap()
+    {
+       return currentMap.Serialize();
+    }
+
+    public void DeSerializeCurrentMap(MapSave mapSave)
+    {
+       currentMap.DeSerialize(mapSave);
     }
 }

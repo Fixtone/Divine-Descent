@@ -26,12 +26,14 @@ public class FileManager : MonoBehaviour
     public void SaveGame()
     {
         string mapPath = Application.persistentDataPath + "/Map.json";
-        
         MapSave mapSave = MapManager.Instance.SerializeCurrentMap();
-        
         string json = JsonUtility.ToJson(mapSave);
-
         File.WriteAllText(mapPath, json);
+
+        string playerPath = Application.persistentDataPath + "/Player.json";
+        PlayerSave playerSave = GameManager.Instance.player.GetComponent<Player>().Save();
+        string playerJson = JsonUtility.ToJson(playerSave);
+        File.WriteAllText(playerPath, playerJson);
     }
 
     public void LoadGame()
@@ -44,13 +46,22 @@ public class FileManager : MonoBehaviour
             string saveString = File.ReadAllText(mapPath);
             mapSave = JsonUtility.FromJson<MapSave>(saveString);
         }
-        else
-        {
-            return;
-        }
 
         MapManager.Instance.DeSerializeCurrentMap(mapSave);
-        MapManager.Instance.currentMap.UpdatePlayerFieldOfView(GameManager.Instance.player.GetComponent<Player>());
+
+        PlayerSave playerSave = new PlayerSave();
+        string playerPath = Application.persistentDataPath + "/Player.json";
+
+        if (File.Exists(playerPath))
+        {
+            string saveString = File.ReadAllText(playerPath);
+            playerSave = JsonUtility.FromJson<PlayerSave>(saveString);
+        }
+
+        Player playerComponent = GameManager.Instance.player.GetComponent<Player>();
+        playerComponent.Load(playerSave);
+
+        MapManager.Instance.currentMap.UpdatePlayerFieldOfView(playerComponent);
         TileManager.Instance.Draw();
     }
 }

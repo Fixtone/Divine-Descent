@@ -1,6 +1,7 @@
 using System.Reflection;
 using UnityEngine;
 using RogueSharp.MapCreation;
+using System.Linq;
 
 public class DungeonMapGenerator
 {
@@ -27,9 +28,25 @@ public class DungeonMapGenerator
         RandomRoomsMapCreationStrategy<DungeonMap> mapCreationStrategy = new RandomRoomsMapCreationStrategy<DungeonMap>(_width, _height, _maxRooms, _roomMaxSize, _roomMinSize, _random);
         _map = mapCreationStrategy.CreateMap();
 
+        PlaceStairs();
         PlacePlayer();
 
         return _map;
+    }
+
+    private void PlaceStairs()
+    {
+        GameObject stairsPrefab = Resources.Load<GameObject>("Prefabs/Scenery/StairsUp");
+        stairsPrefab.transform.localPosition = new Vector3(_map.Rooms.LastOrDefault().Center.X, _map.Rooms.LastOrDefault().Center.Y, 0.0f);
+
+        GameObject stairsInstance = GameObject.Instantiate(stairsPrefab);
+        _map.AddStairs(stairsInstance);
+
+        stairsPrefab = Resources.Load<GameObject>("Prefabs/Scenery/StairsDown");
+        stairsPrefab.transform.localPosition = new Vector3(_map.Rooms.FirstOrDefault().Center.X, _map.Rooms.FirstOrDefault().Center.Y, 0.0f);
+
+        stairsInstance = GameObject.Instantiate(stairsPrefab);
+        _map.AddStairs(stairsInstance);
     }
 
     private void PlacePlayer()

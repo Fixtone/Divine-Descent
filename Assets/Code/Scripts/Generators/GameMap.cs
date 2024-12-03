@@ -15,6 +15,9 @@ public class GameMap : Map
     public virtual void UpdatePlayerFieldOfView(Player player)
     { }
 
+    public virtual void AddStairs(GameObject stairs)
+    { }
+
     public virtual void AddPlayer(GameObject player)
     { }
 

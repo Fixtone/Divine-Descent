@@ -33,8 +33,5 @@ public class GameManager : MonoBehaviour
         WorldRandom = new DotNetRandom(WorldSeed);
 
         StateManager.Instance.AddState(new GenerateMapState());
-        
-        //string mapData = map.ToString();
-        //File.WriteAllText(Application.persistentDataPath + "/MapData.txt", mapData);
     }
 }

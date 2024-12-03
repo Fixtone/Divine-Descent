@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class DungeonMap : GameMap
 {
+    private List<GameObject> stairs = new List<GameObject>();
+
     public override void UpdatePlayerFieldOfView(Player player)
     {
         // Compute the field-of-view based on the player's location and awareness
@@ -19,6 +21,11 @@ public class DungeonMap : GameMap
                 SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, true);
             }
         }
+    }
+
+    public override void AddStairs(GameObject stairs)
+    {
+        this.stairs.Add(stairs);
     }
 
     public override void AddPlayer(GameObject player)
@@ -66,14 +73,14 @@ public class DungeonMap : GameMap
 
     public override bool PositionHasAnActor(int x, int y)
     {
-        return GameManager.Instance.player.transform.localPosition == new Vector3(x,y,0);
+        return GameManager.Instance.player.transform.localPosition == new Vector3(x, y, 0);
     }
 
     public override MapSave Serialize()
     {
         MapSave mapSave = new MapSave();
         mapSave.MapState = Save();
-        
+
         return mapSave;
     }
 

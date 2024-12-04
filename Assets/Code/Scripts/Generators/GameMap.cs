@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class GameMap : Map
 {
+    protected List<GameObject> stairs = new List<GameObject>();
+    protected float fogIntensity = 0.25f;
 
     public GameMap()
     {
@@ -45,5 +47,10 @@ public class GameMap : Map
 
     public virtual void Draw()
     {
+    }
+
+    public virtual void SetFogIntensity(float fogIntensity)
+    {
+        this.fogIntensity = fogIntensity;
     }
 }

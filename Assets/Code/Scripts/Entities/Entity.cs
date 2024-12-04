@@ -6,7 +6,10 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))] //Make it kinematic
 public class Entity : MonoBehaviour
 {
-    protected virtual void Start()
-    {
-    }
+    [SerializeField]
+    protected SpriteRenderer spriteRenderer;
+
+    protected virtual void Start() { }
+
+    public virtual void Draw(Color color) { }
 }

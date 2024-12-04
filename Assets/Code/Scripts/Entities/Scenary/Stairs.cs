@@ -9,4 +9,8 @@ public class Stairs : Entity
         base.Start();
     }
 
+    public override void Draw(Color color)
+    {
+        spriteRenderer.color = color;
+    }
 }

@@ -7,8 +7,6 @@ using UnityEngine;
 
 public class DungeonMap : GameMap
 {
-    private List<GameObject> stairs = new List<GameObject>();
-
     public override void UpdatePlayerFieldOfView(Player player)
     {
         // Compute the field-of-view based on the player's location and awareness
@@ -92,6 +90,7 @@ public class DungeonMap : GameMap
     public override void Draw()
     {
         DrawTileMaps();
+        DrawStairs();
     }
 
     private void DrawTileMaps()
@@ -125,7 +124,7 @@ public class DungeonMap : GameMap
                 {
                     if (cell.IsExplored)
                     {
-                        color.a = 0.35f;
+                        color.a = fogIntensity;
                     }
                     else
                     {
@@ -135,6 +134,43 @@ public class DungeonMap : GameMap
 
                 tileManager.SetTile(x, y, GameManager.Instance.TileSet, tileGraphic, color);
             }
+        }
+    }
+
+    private void DrawStairs()
+    {
+        foreach (GameObject stairsGO in this.stairs)
+        {
+            Stairs stairs = stairsGO.GetComponent<Stairs>();
+            if (stairs == null)
+            {
+                continue;
+            }
+
+            Vector2Int stairsMapPosition = new Vector2Int((int)stairsGO.transform.localPosition.x, (int)stairsGO.transform.localPosition.y);
+            ICell mapCell = GetCell(stairsMapPosition.x, stairsMapPosition.y);
+
+            Color color = Color.white;
+            if (IsInFov(stairsMapPosition.x, stairsMapPosition.y))
+            {
+                if (!mapCell.IsExplored)
+                {
+                    color = Color.black;
+                }
+            }
+            else
+            {
+                if (mapCell.IsExplored)
+                {
+                    color.a = fogIntensity;
+                }
+                else
+                {
+                    color = Color.black;
+                }
+            }
+
+            stairs.Draw(color);
         }
     }
 }

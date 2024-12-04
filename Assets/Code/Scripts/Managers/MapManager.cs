@@ -25,17 +25,17 @@ public class MapManager : MonoBehaviour
 
     public void GenerateNewMap()
     {
-        DungeonMapGenerator mapGenerator = new DungeonMapGenerator(100, 50, 50, 12, 8, GameManager.WorldRandom);
+        DungeonMapGenerator mapGenerator = new DungeonMapGenerator(100, 50, 50, 12, 8, 0.25f, GameManager.WorldRandom);
         currentMap = mapGenerator.CreateMap();
     }
 
     public MapSave SerializeCurrentMap()
     {
-       return currentMap.Serialize();
+        return currentMap.Serialize();
     }
 
     public void DeSerializeCurrentMap(MapSave mapSave)
     {
-       currentMap.DeSerialize(mapSave);
+        currentMap.DeSerialize(mapSave);
     }
 }

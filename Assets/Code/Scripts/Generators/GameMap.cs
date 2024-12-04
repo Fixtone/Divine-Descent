@@ -42,4 +42,8 @@ public class GameMap : Map
     public virtual void DeSerialize(MapSave mapSave)
     {
     }
+
+    public virtual void Draw()
+    {
+    }
 }

@@ -62,6 +62,6 @@ public class FileManager : MonoBehaviour
         playerComponent.Load(playerSave);
 
         MapManager.Instance.currentMap.UpdatePlayerFieldOfView(playerComponent);
-        TileManager.Instance.Draw();
+        MapManager.Instance.currentMap.Draw();
     }
 }

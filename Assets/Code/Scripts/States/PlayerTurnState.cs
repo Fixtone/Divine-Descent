@@ -12,7 +12,7 @@ public class PlayerTurnState : BaseState
     {
         base.PrepareState();
 
-        TileManager.Instance.Draw();
+        MapManager.Instance.currentMap.Draw();
     }
 
     public override void DestroyState()
@@ -41,18 +41,18 @@ public class PlayerTurnState : BaseState
         {
             didAction = CommandManager.Instance.MoveActor(GameManager.Instance.player.GetComponent<Player>(), Direction.Down);
         }
-        else if(Input.GetKeyDown(KeyCode.S))
+        else if (Input.GetKeyDown(KeyCode.S))
         {
             FileManager.Instance.SaveGame();
         }
-        else if(Input.GetKeyDown(KeyCode.L))
+        else if (Input.GetKeyDown(KeyCode.L))
         {
             FileManager.Instance.LoadGame();
         }
 
         if (didAction)
         {
-            TileManager.Instance.Draw();
+            MapManager.Instance.currentMap.Draw();
             StateManager.Instance.AddState(new EnemyTurnState());
         }
     }

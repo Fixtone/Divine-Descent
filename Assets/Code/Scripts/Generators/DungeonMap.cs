@@ -88,4 +88,53 @@ public class DungeonMap : GameMap
     {
         Restore(mapSave.MapState);
     }
+
+    public override void Draw()
+    {
+        DrawTileMaps();
+    }
+
+    private void DrawTileMaps()
+    {
+        TileManager tileManager = TileManager.Instance;
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                ICell cell = GetCell(x, y);
+
+                string tileGraphic = "Unknown";
+                if (PositionHasAnActor(x, y))
+                {
+                    tileGraphic = "Floor";
+                }
+                else
+                {
+                    tileGraphic = cell.IsWalkable ? "Floor" : "Wall";
+                }
+
+                Color color = Color.white;
+                if (IsInFov(cell.X, cell.Y))
+                {
+                    if (!cell.IsExplored)
+                    {
+                        color = Color.black;
+                    }
+                }
+                else
+                {
+                    if (cell.IsExplored)
+                    {
+                        color.a = 0.35f;
+                    }
+                    else
+                    {
+                        color = Color.black;
+                    }
+                }
+
+                tileManager.SetTile(x, y, GameManager.Instance.TileSet, tileGraphic, color);
+            }
+        }
+    }
 }

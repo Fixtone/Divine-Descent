@@ -40,13 +40,13 @@ public class DungeonMapGenerator
 
     private void PlaceStairs()
     {
-        GameObject stairsPrefab = Resources.Load<GameObject>("Prefabs/Scenery/StairsUp");
+        GameObject stairsPrefab = Resources.Load<GameObject>("Prefabs/Scenery/StairsDown");
         stairsPrefab.transform.localPosition = new Vector3(_map.Rooms.LastOrDefault().Center.X, _map.Rooms.LastOrDefault().Center.Y, 0.0f);
 
         GameObject stairsInstance = GameObject.Instantiate(stairsPrefab);
         _map.AddStairs(stairsInstance);
 
-        stairsPrefab = Resources.Load<GameObject>("Prefabs/Scenery/StairsDown");
+        stairsPrefab = Resources.Load<GameObject>("Prefabs/Scenery/StairsUp");
         stairsPrefab.transform.localPosition = new Vector3(_map.Rooms.FirstOrDefault().Center.X, _map.Rooms.FirstOrDefault().Center.Y, 0.0f);
 
         stairsInstance = GameObject.Instantiate(stairsPrefab);

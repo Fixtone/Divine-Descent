@@ -44,3 +44,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Scenery
+    uniqueID: 2111895301
+    locked: 0
+  - name: Actors
+    uniqueID: 2830379279
+    locked: 0

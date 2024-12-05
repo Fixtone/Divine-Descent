@@ -9,12 +9,22 @@ public class DungeonMap : GameMap
 {
     public override void UpdatePlayerFieldOfView(Player player)
     {
-        // Compute the field-of-view based on the player's location and awareness
-        ComputeFov((int)player.transform.localPosition.x, (int)player.transform.localPosition.y, 8, /*player.Awareness*/ true);
-        // Mark all cells in field-of-view as having been explored
-        foreach (Cell cell in GetAllCells())
+        if (SROptions.Current.FieldOfView)
         {
-            if (IsInFov(cell.X, cell.Y))
+            // Compute the field-of-view based on the player's location and awareness
+            ComputeFov((int)player.transform.localPosition.x, (int)player.transform.localPosition.y, 8, /*player.Awareness*/ true);
+            // Mark all cells in field-of-view as having been explored
+            foreach (Cell cell in GetAllCells())
+            {
+                if (IsInFov(cell.X, cell.Y))
+                {
+                    SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, true);
+                }
+            }
+        }
+        else
+        {
+            foreach (Cell cell in GetAllCells())
             {
                 SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, true);
             }
@@ -113,22 +123,25 @@ public class DungeonMap : GameMap
                 }
 
                 Color color = Color.white;
-                if (IsInFov(cell.X, cell.Y))
+                if (SROptions.Current.FieldOfView)
                 {
-                    if (!cell.IsExplored)
+                    if (IsInFov(cell.X, cell.Y))
                     {
-                        color = Color.black;
-                    }
-                }
-                else
-                {
-                    if (cell.IsExplored)
-                    {
-                        color.a = fogIntensity;
+                        if (!cell.IsExplored)
+                        {
+                            color = Color.black;
+                        }
                     }
                     else
                     {
-                        color = Color.black;
+                        if (cell.IsExplored)
+                        {
+                            color.a = fogIntensity;
+                        }
+                        else
+                        {
+                            color = Color.black;
+                        }
                     }
                 }
 
@@ -147,26 +160,30 @@ public class DungeonMap : GameMap
                 continue;
             }
 
-            Vector2Int stairsMapPosition = new Vector2Int((int)stairsGO.transform.localPosition.x, (int)stairsGO.transform.localPosition.y);
-            ICell mapCell = GetCell(stairsMapPosition.x, stairsMapPosition.y);
-
             Color color = Color.white;
-            if (IsInFov(stairsMapPosition.x, stairsMapPosition.y))
+            if (SROptions.Current.FieldOfView)
             {
-                if (!mapCell.IsExplored)
+                Vector2Int stairsMapPosition = new Vector2Int((int)stairsGO.transform.localPosition.x, (int)stairsGO.transform.localPosition.y);
+                ICell mapCell = GetCell(stairsMapPosition.x, stairsMapPosition.y);
+
+                color = Color.white;
+                if (IsInFov(stairsMapPosition.x, stairsMapPosition.y))
                 {
-                    color = Color.black;
-                }
-            }
-            else
-            {
-                if (mapCell.IsExplored)
-                {
-                    color.a = fogIntensity;
+                    if (!mapCell.IsExplored)
+                    {
+                        color = Color.black;
+                    }
                 }
                 else
                 {
-                    color = Color.black;
+                    if (mapCell.IsExplored)
+                    {
+                        color.a = fogIntensity;
+                    }
+                    else
+                    {
+                        color = Color.black;
+                    }
                 }
             }
 

@@ -25,7 +25,7 @@ public class MapManager : MonoBehaviour
 
     public void GenerateNewMap()
     {
-        DungeonMapGenerator mapGenerator = new DungeonMapGenerator(100, 50, 50, 12, 8, 0.25f, GameManager.WorldRandom);
+        DungeonMapGenerator mapGenerator = new DungeonMapGenerator(100, 50, 50, 12, 8, 0.25f, GameManager.Instance.WorldRandom);
         currentMap = mapGenerator.CreateMap();
     }
 

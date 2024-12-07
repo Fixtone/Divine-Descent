@@ -45,6 +45,17 @@ public class DungeonMap : GameMap
         SchedulingManager.Instance.Add(player.GetComponent<Player>());
     }
 
+    public override void AddMonster(GameObject monster)
+    {
+        monsters.Add(monster);
+
+        Monster monsterComponent = monster.GetComponent<Monster>();
+
+        SetActorPosition(monsterComponent, (int)monsterComponent.transform.localPosition.x, (int)monsterComponent.transform.localPosition.y);
+
+        SchedulingManager.Instance.Add(monster.GetComponent<Monster>());
+    }
+
     public override void SetIsWalkable(int x, int y, bool isWalkable)
     {
         Cell cell = GetCell(x, y) as Cell;
@@ -80,7 +91,46 @@ public class DungeonMap : GameMap
 
     public override bool PositionHasAnActor(int x, int y)
     {
-        return GameManager.Instance.player.transform.localPosition == new Vector3(x, y, 0);
+        if (GameManager.Instance.player.transform.localPosition == new Vector3(x, y, 0))
+        {
+            return true;
+        }
+
+        return monsters.Find(monster => monster.transform.localPosition == new Vector3(x, y, 0)) != null;
+    }
+
+    public override Vector3 GetRandomWalkableLocationInRoom(Rectangle room)
+    {
+        if (DoesRoomHaveWalkableSpace(room))
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                int x = GameManager.Instance.WorldRandom.Next(1, room.Width - 2) + room.X;
+                int y = GameManager.Instance.WorldRandom.Next(1, room.Height - 2) + room.Y;
+
+                if (IsWalkable(x, y))
+                {
+                    return new Vector3(x, y, 0);
+                }
+            }
+        }
+
+        return Vector3.zero;
+    }
+
+    public override bool DoesRoomHaveWalkableSpace(Rectangle room)
+    {
+        for (int x = 1; x <= room.Width - 2; x++)
+        {
+            for (int y = 1; y <= room.Height - 2; y++)
+            {
+                if (IsWalkable(x + room.X, y + room.Y))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public override MapSave Serialize()
@@ -100,6 +150,7 @@ public class DungeonMap : GameMap
     {
         DrawTileMaps();
         DrawStairs();
+        DrawMonsters();
     }
 
     private void DrawTileMaps()
@@ -187,6 +238,47 @@ public class DungeonMap : GameMap
             }
 
             stairs.Draw(color);
+        }
+    }
+
+    private void DrawMonsters()
+    {
+        foreach (GameObject monsterGO in this.monsters)
+        {
+            Monster monster = monsterGO.GetComponent<Monster>();
+            if (stairs == null)
+            {
+                continue;
+            }
+
+            Color color = Color.white;
+            if (DebugCommandRegister.GetCategoryInstance<MapCategoryDebugCommands>(MapDebugCommands.MAP_CATEGORY_NAME).FieldOfView)
+            {
+                Vector2Int monsterMapPosition = new Vector2Int((int)monsterGO.transform.localPosition.x, (int)monsterGO.transform.localPosition.y);
+                ICell mapCell = GetCell(monsterMapPosition.x, monsterMapPosition.y);
+
+                color = Color.white;
+                if (IsInFov(monsterMapPosition.x, monsterMapPosition.y))
+                {
+                    if (!mapCell.IsExplored)
+                    {
+                        color = Color.black;
+                    }
+                }
+                else
+                {
+                    if (mapCell.IsExplored)
+                    {
+                        color.a = fogIntensity;
+                    }
+                    else
+                    {
+                        color = Color.black;
+                    }
+                }
+            }
+
+            monster.Draw(color);
         }
     }
 }

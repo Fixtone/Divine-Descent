@@ -6,20 +6,26 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    #region Singleton
     public static GameManager Instance;
-    #endregion
+
+    public Transform ActorsParent;
+    public Transform MonstersParent;
+    public Transform StairsParent;
 
     public string TileSet = "ASCII";
     public int WorldSeed = 1234;
-    public static IRandom WorldRandom;
-
+    public IRandom WorldRandom;
     public GameObject player;
 
     // Start is called before the first frame update
     private void Awake()
     {
-        Instance = this;
+        if (Instance != null)
+            Destroy(gameObject);
+        else
+            Instance = this;
+
+        DontDestroyOnLoad(gameObject);
 
         if (PlayerPrefs.GetString("TileSet") != string.Empty)
         {

@@ -54,6 +54,7 @@
     "dotnet.defaultSolution": "Divine-Descent.sln",
     "cSpell.words": [
         "Behaviour",
+        "Kobol",
         "Prefs",
         "Scheduleable",
         "Tileset"

@@ -64,6 +64,8 @@ public class DungeonMapGenerator
 
         player.transform.localPosition = new Vector3(_map.Rooms[0].Center.X, _map.Rooms[0].Center.Y, 0.0f);
 
+        CameraManager.Instance.SetFollowTarget(player.transform);
+
         _map.AddPlayer(player);
     }
 }

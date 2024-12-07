@@ -63,5 +63,8 @@ public class FileManager : MonoBehaviour
 
         MapManager.Instance.currentMap.UpdatePlayerFieldOfView(playerComponent);
         MapManager.Instance.currentMap.Draw();
+
+        CameraManager.Instance.SetFollowTarget(GameManager.Instance.player.transform);
+        CameraManager.Instance.UpdateCamera();
     }
 }

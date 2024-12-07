@@ -53,6 +53,8 @@ public class PlayerTurnState : BaseState
         if (didAction)
         {
             MapManager.Instance.currentMap.Draw();
+            CameraManager.Instance.UpdateCamera();
+
             StateManager.Instance.AddState(new EnemyTurnState());
         }
     }

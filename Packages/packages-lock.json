@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "com.exnoa.noa.debugger": {
+      "version": "file:com.exnoa.noa.debugger",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0",
+        "com.unity.textmeshpro": "3.0.6"
+      }
+    },
     "com.unity.2d.animation": {
       "version": "9.1.2",
       "depth": 0,

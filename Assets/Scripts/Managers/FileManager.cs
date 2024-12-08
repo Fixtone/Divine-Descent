@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -23,19 +24,6 @@ public class FileManager : MonoBehaviour
         persistentDataPath = Application.persistentDataPath;
     }
 
-    public void SaveGame()
-    {
-        string mapPath = Application.persistentDataPath + "/Map.json";
-        MapSave mapSave = MapManager.Instance.SerializeCurrentMap();
-        string json = JsonUtility.ToJson(mapSave);
-        File.WriteAllText(mapPath, json);
-
-        string playerPath = Application.persistentDataPath + "/Player.json";
-        PlayerSave playerSave = GameManager.Instance.player.GetComponent<Player>().Save();
-        string playerJson = JsonUtility.ToJson(playerSave);
-        File.WriteAllText(playerPath, playerJson);
-    }
-
     public void LoadGame()
     {
         MapSave mapSave = new MapSave();
@@ -47,7 +35,7 @@ public class FileManager : MonoBehaviour
             mapSave = JsonUtility.FromJson<MapSave>(saveString);
         }
 
-        MapManager.Instance.DeSerializeCurrentMap(mapSave);
+        WorldManager.Instance.DeSerializeCurrentMap(mapSave);
 
         PlayerSave playerSave = new PlayerSave();
         string playerPath = Application.persistentDataPath + "/Player.json";
@@ -61,10 +49,43 @@ public class FileManager : MonoBehaviour
         Player playerComponent = GameManager.Instance.player.GetComponent<Player>();
         playerComponent.Load(playerSave);
 
-        MapManager.Instance.currentMap.UpdatePlayerFieldOfView(playerComponent);
-        MapManager.Instance.currentMap.Draw();
+        WorldManager.Instance.currentMap.UpdatePlayerFieldOfView(playerComponent);
+        WorldManager.Instance.currentMap.Draw();
 
         CameraManager.Instance.SetFollowTarget(GameManager.Instance.player.transform);
         CameraManager.Instance.UpdateCamera();
+    }
+
+    public void SaveGame()
+    {
+        string worldPath = Application.persistentDataPath + "/World.json";
+
+        WorldSave worldSave;
+        if (File.Exists(worldPath))
+        {
+            worldSave = new WorldSave();
+            string saveString = File.ReadAllText(worldPath);
+            worldSave = JsonUtility.FromJson<WorldSave>(saveString);
+
+            MapSave currentMapSave = WorldManager.Instance.SaveCurrentMap();
+
+            bool existMapSaved = worldSave.maps.Exists(map => map.Id == currentMapSave.Id);
+            if (existMapSaved)
+            {
+                int savedMapSaveIndex = worldSave.maps.FindIndex(map => map.Id == currentMapSave.Id);
+                worldSave.maps[savedMapSaveIndex] = currentMapSave;
+            }
+            else
+            {
+                worldSave.maps.Add(currentMapSave);
+            }
+        }
+        else
+        {
+            worldSave = WorldManager.Instance.SaveWorld();
+        }
+
+        string json = JsonUtility.ToJson(worldSave);
+        File.WriteAllText(worldPath, json);
     }
 }

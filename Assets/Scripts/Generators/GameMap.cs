@@ -7,12 +7,18 @@ using UnityEngine;
 
 public class GameMap : Map
 {
+    protected int id;
     protected List<GameObject> monsters = new List<GameObject>();
     protected List<GameObject> stairs = new List<GameObject>();
-    protected float fogIntensity = 0.25f;
+    protected float fogIntensity;
 
     public GameMap()
     {
+    }
+
+    public virtual void SetId(int id)
+    {
+        this.id = id;
     }
 
     public virtual void UpdatePlayerFieldOfView(Player player)
@@ -51,12 +57,12 @@ public class GameMap : Map
         return Vector3.zero;
     }
 
-    public virtual MapSave Serialize()
+    public virtual MapSave SaveMap()
     {
         return new MapSave();
     }
 
-    public virtual void DeSerialize(MapSave mapSave)
+    public virtual void LoadMap(MapSave mapSave)
     {
     }
 

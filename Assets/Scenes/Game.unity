@@ -392,7 +392,7 @@ MonoBehaviour:
   MonstersParent: {fileID: 772172394}
   StairsParent: {fileID: 1737162207}
   TileSet: Pixel
-  WorldSeed: 1234
+  WorldSeed: 25
   player: {fileID: 0}
 --- !u!4 &795657821
 Transform:
@@ -1051,7 +1051,7 @@ GameObject:
   - component: {fileID: 1940363782}
   - component: {fileID: 1940363781}
   m_Layer: 0
-  m_Name: MapManager
+  m_Name: WorldManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -12,7 +12,7 @@ public class PlayerTurnState : BaseState
     {
         base.PrepareState();
 
-        MapManager.Instance.currentMap.Draw();
+        WorldManager.Instance.currentMap.Draw();
     }
 
     public override void DestroyState()
@@ -49,10 +49,27 @@ public class PlayerTurnState : BaseState
         {
             FileManager.Instance.LoadGame();
         }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            FileManager.Instance.SaveGame();
+
+            foreach (Transform child in GameManager.Instance.StairsParent)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+
+            foreach (Transform child in GameManager.Instance.MonstersParent)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+
+            SchedulingManager.Instance.Clear();
+            StateManager.Instance.AddState(new GenerateMapState());
+        }
 
         if (didAction)
         {
-            MapManager.Instance.currentMap.Draw();
+            WorldManager.Instance.currentMap.Draw();
             CameraManager.Instance.UpdateCamera();
 
             StateManager.Instance.AddState(new EnemyTurnState());

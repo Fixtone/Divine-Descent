@@ -11,7 +11,7 @@ public class GenerateMapState : BaseState
 
         owner.UiRoot.GenerateMapView.ShowView();
 
-        MapManager.Instance.GenerateNewMap();
+        WorldManager.Instance.GenerateNewMap();
 
         StateManager.Instance.ChangeState(new PlayerTurnState());
     }

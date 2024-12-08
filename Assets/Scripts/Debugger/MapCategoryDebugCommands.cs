@@ -21,7 +21,7 @@ public class MapCategoryDebugCommands : DebugCategoryBase
         set
         {
             fieldOfView = value;
-            MapManager.Instance.currentMap.Draw();
+            WorldManager.Instance.currentMap.Draw();
         }
     }
 
@@ -35,8 +35,8 @@ public class MapCategoryDebugCommands : DebugCategoryBase
 
         Vector3 position = new Vector3((int)stairsPositions[stairsPositionIndex].x, (int)stairsPositions[stairsPositionIndex].y, 0);
 
-        MapManager.Instance.currentMap.SetActorPosition(GameManager.Instance.player.GetComponent<Player>(), (int)position.x, (int)position.y);
-        MapManager.Instance.currentMap.Draw();
+        WorldManager.Instance.currentMap.SetActorPosition(GameManager.Instance.player.GetComponent<Player>(), (int)position.x, (int)position.y);
+        WorldManager.Instance.currentMap.Draw();
         CameraManager.Instance.UpdateCamera();
 
         stairsPositionIndex++;

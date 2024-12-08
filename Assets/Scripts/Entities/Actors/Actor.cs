@@ -4,6 +4,7 @@ public class Actor : Entity, IActor, IScheduleable
 {
     private string _name;
     private int _speed;
+    private string _prefabPath;
 
     public Actor()
     {
@@ -31,6 +32,18 @@ public class Actor : Entity, IActor, IScheduleable
         set
         {
             _speed = value;
+        }
+    }
+
+    public string PrefabPath
+    {
+        get
+        {
+            return _prefabPath;
+        }
+        set
+        {
+            _prefabPath = value;
         }
     }
 

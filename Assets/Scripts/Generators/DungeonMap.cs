@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NoaDebugger;
 using RogueSharp;
 using UnityEngine;
@@ -133,15 +134,23 @@ public class DungeonMap : GameMap
         return false;
     }
 
-    public override MapSave Serialize()
+    public override MapSave SaveMap()
     {
         MapSave mapSave = new MapSave();
+        mapSave.Id = id;
+        mapSave.FogIntensity = fogIntensity;
         mapSave.MapState = Save();
+        mapSave.Monsters = new List<MonsterSave>();
+
+        foreach (GameObject monsterGO in monsters)
+        {
+            mapSave.Monsters.Add(monsterGO.GetComponent<Monster>().Save());
+        }
 
         return mapSave;
     }
 
-    public override void DeSerialize(MapSave mapSave)
+    public override void LoadMap(MapSave mapSave)
     {
         Restore(mapSave.MapState);
     }

@@ -6,6 +6,7 @@ using RogueSharp.DiceNotation;
 
 public class DungeonMapGenerator
 {
+    private readonly int _id;
     private readonly int _width;
     private readonly int _height;
     private readonly int _maxRooms;
@@ -15,8 +16,9 @@ public class DungeonMapGenerator
     private readonly RogueSharp.Random.IRandom _random;
     private DungeonMap _map;
 
-    public DungeonMapGenerator(int width, int height, int maxRooms, int roomMaxSize, int roomMinSize, float fogIntensity, RogueSharp.Random.IRandom random)
+    public DungeonMapGenerator(int id, int width, int height, int maxRooms, int roomMaxSize, int roomMinSize, float fogIntensity, RogueSharp.Random.IRandom random)
     {
+        _id = id;
         _width = width;
         _height = height;
         _maxRooms = maxRooms;
@@ -31,6 +33,7 @@ public class DungeonMapGenerator
         RandomRoomsMapCreationStrategy<DungeonMap> mapCreationStrategy = new RandomRoomsMapCreationStrategy<DungeonMap>(_width, _height, _maxRooms, _roomMaxSize, _roomMinSize, _random);
         _map = mapCreationStrategy.CreateMap();
 
+        _map.SetId(_id);
         _map.SetFogIntensity(_fogIntensity);
 
         PlaceStairs();
@@ -91,7 +94,10 @@ public class DungeonMapGenerator
 
                         GameObject kobolPrefab = Resources.Load<GameObject>("Prefabs/Actors/Kobol");
                         GameObject kobolGOInstance = GameObject.Instantiate(kobolPrefab, GameManager.Instance.MonstersParent);
-                        kobolGOInstance.transform.localPosition = randomRoomLocation;
+                        Monster monsterComponent = kobolGOInstance.GetComponent<Monster>();
+
+                        monsterComponent.PrefabPath = "Prefabs/Actors/Kobol";
+                        monsterComponent.transform.localPosition = randomRoomLocation;
 
                         _map.AddMonster(kobolGOInstance);
                     }

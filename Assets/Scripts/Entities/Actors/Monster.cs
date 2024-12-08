@@ -13,4 +13,14 @@ public class Monster : Actor
     {
         spriteRenderer.color = color;
     }
+
+    public MonsterSave Save()
+    {
+        MonsterSave monsterSave = new MonsterSave();
+        monsterSave.characterName = Name;
+        monsterSave.mapPosition = transform.localPosition;
+        monsterSave.prefabPath = PrefabPath;
+
+        return monsterSave;
+    }
 }

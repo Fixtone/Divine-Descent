@@ -73,7 +73,7 @@ public class CommandManager : MonoBehaviour
                 }
         }
 
-        if (MapManager.Instance.currentMap.SetActorPosition(actor, x, y))
+        if (WorldManager.Instance.currentMap.SetActorPosition(actor, x, y))
         {
             return true;
         }

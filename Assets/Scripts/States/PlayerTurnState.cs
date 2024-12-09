@@ -51,20 +51,7 @@ public class PlayerTurnState : BaseState
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
-            FileManager.Instance.SaveGame();
-
-            foreach (Transform child in GameManager.Instance.StairsParent)
-            {
-                GameObject.Destroy(child.gameObject);
-            }
-
-            foreach (Transform child in GameManager.Instance.MonstersParent)
-            {
-                GameObject.Destroy(child.gameObject);
-            }
-
-            SchedulingManager.Instance.Clear();
-            StateManager.Instance.AddState(new GenerateMapState());
+            StateManager.Instance.AddState(new GoToLevelState { stairsType = Stairs.Type.Down });
         }
 
         if (didAction)

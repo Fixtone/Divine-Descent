@@ -13,7 +13,7 @@ public class GenerateMapState : BaseState
 
         WorldManager.Instance.GenerateNewMap();
 
-        StateManager.Instance.ChangeState(new PlayerTurnState());
+        StateManager.Instance.PopState();
     }
 
     public override void DestroyState()

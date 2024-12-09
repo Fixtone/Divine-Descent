@@ -38,6 +38,11 @@ public class GameManager : MonoBehaviour
         WorldSeed = PlayerPrefs.GetInt("Seed");
         WorldRandom = new DotNetRandom(WorldSeed);
 
-        StateManager.Instance.AddState(new GenerateMapState());
+        StateManager.Instance.PushState(new GenerateMapState());
+        StateManager.Instance.ChangeState(new PlayerTurnState());
+    }
+
+    private void MoveMapLevelDown()
+    {
     }
 }

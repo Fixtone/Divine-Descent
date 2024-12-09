@@ -147,6 +147,12 @@ public class DungeonMap : GameMap
             mapSave.Monsters.Add(monsterGO.GetComponent<Monster>().Save());
         }
 
+        mapSave.Stairs = new List<StairsSave>();
+        foreach (GameObject stairsGO in stairs)
+        {
+            mapSave.Stairs.Add(stairsGO.GetComponent<Stairs>().Save());
+        }
+
         return mapSave;
     }
 

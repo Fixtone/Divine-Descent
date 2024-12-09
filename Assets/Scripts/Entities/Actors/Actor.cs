@@ -4,23 +4,9 @@ public class Actor : Entity, IActor, IScheduleable
 {
     private string _name;
     private int _speed;
-    private string _prefabPath;
 
     public Actor()
     {
-
-    }
-
-    public string Name
-    {
-        get
-        {
-            return _name;
-        }
-        set
-        {
-            _name = value;
-        }
     }
 
     public int Speed
@@ -35,19 +21,6 @@ public class Actor : Entity, IActor, IScheduleable
         }
     }
 
-    public string PrefabPath
-    {
-        get
-        {
-            return _prefabPath;
-        }
-        set
-        {
-            _prefabPath = value;
-        }
-    }
-
-    // Ischeduleable
     public int Time { get { return Speed; } }
 
     protected override void Start()

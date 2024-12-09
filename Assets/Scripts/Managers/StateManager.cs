@@ -74,11 +74,16 @@ public class StateManager : MonoBehaviour
 
     public void PushState(BaseState newState)
     {
-        BaseState currentState = currentStates.Peek();
-        // If we currently have state, we need to destroy it!
-        if (currentState != null)
+        BaseState currentState;
+
+        if (currentStates.Count > 0)
         {
-            currentState.ExitState();
+            currentState = currentStates.Peek();
+            // If we currently have state, we need to destroy it!
+            if (currentState != null)
+            {
+                currentState.ExitState();
+            }
         }
 
         // Swap reference

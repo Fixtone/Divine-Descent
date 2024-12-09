@@ -15,4 +15,6 @@ public struct MapSave
     public MapState MapState;
     [SerializeField]
     public List<MonsterSave> Monsters;
+    [SerializeField]
+    public List<StairsSave> Stairs;
 }

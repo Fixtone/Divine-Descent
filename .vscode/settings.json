@@ -57,6 +57,7 @@
         "Kobol",
         "Prefs",
         "Scheduleable",
+        "Scriptable",
         "Tileset"
     ]
 }

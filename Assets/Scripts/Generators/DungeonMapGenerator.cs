@@ -16,15 +16,15 @@ public class DungeonMapGenerator
     private readonly RogueSharp.Random.IRandom _random;
     private DungeonMap _map;
 
-    public DungeonMapGenerator(int id, int width, int height, int maxRooms, int roomMaxSize, int roomMinSize, float fogIntensity, RogueSharp.Random.IRandom random)
+    public DungeonMapGenerator(MapObject mapObject, RogueSharp.Random.IRandom random)
     {
-        _id = id;
-        _width = width;
-        _height = height;
-        _maxRooms = maxRooms;
-        _roomMaxSize = roomMaxSize;
-        _roomMinSize = roomMinSize;
-        _fogIntensity = fogIntensity;
+        _id = mapObject.id;
+        _width = mapObject.width;
+        _height = mapObject.height;
+        _maxRooms = mapObject.maxRooms;
+        _roomMaxSize = mapObject.roomMaxSize;
+        _roomMinSize = mapObject.roomMinSize;
+        _fogIntensity = mapObject.fogIntensity;
         _random = random;
     }
 

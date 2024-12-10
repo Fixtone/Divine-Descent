@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using RogueSharp;
 using RogueSharp.Random;
+using UnityEditor;
 using UnityEngine;
 
 public class WorldManager : MonoBehaviour
@@ -14,7 +16,9 @@ public class WorldManager : MonoBehaviour
     public GameMap currentMap { get; private set; }
 
     public Dictionary<int, GameMap> maps = new Dictionary<int, GameMap>();
-    private int mapId = 1;
+
+    [SerializeField]
+    private int currentMapId = 0;
 
     // Start is called before the first frame update
     private void Awake()
@@ -29,11 +33,26 @@ public class WorldManager : MonoBehaviour
 
     public void GenerateNewMap()
     {
-        DungeonMapGenerator mapGenerator = new DungeonMapGenerator(mapId, 100, 50, 50, 12, 8, 0.25f, GameManager.Instance.WorldRandom);
-        currentMap = mapGenerator.CreateMap();
+        currentMapId++;
 
-        maps.Add(mapId, currentMap);
-        mapId++;
+        MapObject mapObject = DatabaseManager.Instance.GetMapObjectById(currentMapId);
+
+        if (mapObject == null)
+        {
+            return;
+        }
+
+        switch (mapObject.gameMapType)
+        {
+            case GameMapTypes.DungeonMap:
+                {
+                    DungeonMapGenerator mapGenerator = new DungeonMapGenerator(mapObject, GameManager.Instance.WorldRandom);
+                    currentMap = mapGenerator.CreateMap();
+                    break;
+                }
+        }
+
+        maps.Add(currentMapId, currentMap);
     }
 
     public WorldSave SaveWorld()
@@ -54,8 +73,12 @@ public class WorldManager : MonoBehaviour
         return currentMap.SaveMap();
     }
 
-    public void DeSerializeCurrentMap(MapSave mapSave)
+    public void LoadWorld(WorldSave worldSave)
     {
-        currentMap.LoadMap(mapSave);
+        foreach (MapSave mapSave in worldSave.maps)
+        {
+            GenerateNewMap();
+            currentMap.LoadMap(mapSave);
+        }
     }
 }

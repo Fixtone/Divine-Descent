@@ -5,6 +5,12 @@ using RogueSharp.MapCreation;
 using Unity.VisualScripting;
 using UnityEngine;
 
+[Serializable]
+public enum GameMapTypes
+{
+    DungeonMap = 0
+};
+
 public class GameMap : Map
 {
     protected int id;

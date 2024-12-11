@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -28,4 +27,6 @@ public class MapObject : ScriptableObject
     public int roomMinSize;
     [Range(0.0f, 1.0f)]
     public float fogIntensity;
+
+    public List<StairsObject> stairsObjects;
 }

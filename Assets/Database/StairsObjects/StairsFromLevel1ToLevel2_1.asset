@@ -9,16 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 434b424c169162f4b9b5acda7c3cd9d3, type: 3}
-  m_Name: Level_1
+  m_Script: {fileID: 11500000, guid: a504bc1e4a6574944b3ca259a25cd42d, type: 3}
+  m_Name: StairsFromLevel1ToLevel2_1
   m_EditorClassIdentifier: 
   id: 1
-  gameMapType: 0
-  width: 100
-  height: 50
-  maxRooms: 50
-  roomMaxSize: 12
-  roomMinSize: 8
-  fogIntensity: 0.25
-  stairsObjects:
-  - {fileID: 11400000, guid: 74b6e02c4adf04742851ad2d38a3e5c6, type: 2}
+  type: 1
+  sprite: {fileID: 1218594190, guid: f367e9b805be74336a99dab22f334e4f, type: 3}
+  goToLevelId: 2

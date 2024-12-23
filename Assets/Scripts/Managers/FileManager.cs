@@ -93,5 +93,10 @@ public class FileManager : MonoBehaviour
         CameraManager.Instance.SetFollowTarget(GameManager.Instance.player.transform);
         CameraManager.Instance.UpdateCamera();
     }
+
+    public string GetMapObjectPrefabPath()
+    {
+        return "Prefabs/Scenery/MapObject";
+    }
 }
 

@@ -10,5 +10,6 @@ public struct MonsterSave
     [SerializeField]
     public Vector3 mapPosition;
     [SerializeField]
-    public string prefabPath;
+    public Entity.Type type;
+    public Monster.SubType subtype;
 }

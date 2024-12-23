@@ -6,13 +6,13 @@ using UnityEngine;
 public class Stairs : Entity
 {
     [SerializeField]
-    public enum Type
+    public enum Direction
     {
         Up,
         Down
     }
 
-    public Type type = Type.Up;
+    public Direction direction = Direction.Up;
 
     protected override void Start()
     {
@@ -29,7 +29,7 @@ public class Stairs : Entity
         StairsSave stairsSave = new StairsSave();
         stairsSave.type = type;
         stairsSave.mapPosition = transform.localPosition;
-        stairsSave.prefabPath = PrefabPath;
+        stairsSave.type = type;
 
         return stairsSave;
     }

@@ -6,16 +6,22 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))] //Make it kinematic
 public class Entity : MonoBehaviour
 {
-    private string _prefabPath;
-    public string PrefabPath
+    public enum Type
+    {
+        Actor = 0,
+        MapObject = 1
+    }
+
+    private Type _type;
+    public Type type
     {
         get
         {
-            return _prefabPath;
+            return _type;
         }
         set
         {
-            _prefabPath = value;
+            _type = value;
         }
     }
 

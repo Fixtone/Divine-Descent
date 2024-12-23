@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4603493610692545310}
   - component: {fileID: 9101665718174318988}
   m_Layer: 0
-  m_Name: StairsDown
+  m_Name: MapObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -133,7 +133,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 7317440052503072682}
-  type: 1
 --- !u!1 &5960224215280737771
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,7 +206,7 @@ SpriteRenderer:
   m_SortingLayerID: 2111895301
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1218594190, guid: f367e9b805be74336a99dab22f334e4f, type: 3}
+  m_Sprite: {fileID: -1449386100, guid: f367e9b805be74336a99dab22f334e4f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

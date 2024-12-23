@@ -51,7 +51,7 @@ public class PlayerTurnState : BaseState
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
-            StateManager.Instance.AddState(new GoToLevelState { stairsType = Stairs.Type.Down });
+            StateManager.Instance.AddState(new GoToLevelState { stairsType = Stairs.Direction.Down });
         }
 
         if (didAction)

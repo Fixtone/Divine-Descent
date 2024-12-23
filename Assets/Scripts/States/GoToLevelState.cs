@@ -7,18 +7,18 @@ using UnityEngine;
 /// </summary>
 public class GoToLevelState : BaseState
 {
-    public Stairs.Type stairsType;
+    public Stairs.Direction stairsType;
     public override void EnterState()
     {
         base.EnterState();
 
         switch (stairsType)
         {
-            case Stairs.Type.Up:
+            case Stairs.Direction.Up:
                 {
                     break;
                 }
-            case Stairs.Type.Down:
+            case Stairs.Direction.Down:
                 {
                     GoToDownLevel();
                     break;

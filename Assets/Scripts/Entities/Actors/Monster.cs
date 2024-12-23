@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,8 +20,8 @@ public class Monster : Actor
         MonsterSave monsterSave = new MonsterSave();
         monsterSave.characterName = Name;
         monsterSave.mapPosition = transform.localPosition;
-        monsterSave.prefabPath = PrefabPath;
-
+        monsterSave.type = type;
+        monsterSave.subtype = subType;
         return monsterSave;
     }
 }

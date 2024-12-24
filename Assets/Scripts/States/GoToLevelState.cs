@@ -8,16 +8,29 @@ using UnityEngine;
 public class GoToLevelState : BaseState
 {
     public int mapIdGoingTo;
-    public override void EnterState()
+    public bool saveCurrentMap = true;
+    public override void PrepareState()
     {
-        base.EnterState();
+        base.PrepareState();
+
+        owner.UiRoot.GenerateMapView.ShowView();
 
         GoToLevel();
     }
 
+    public override void DestroyState()
+    {
+        base.DestroyState();
+
+        owner.UiRoot.GenerateMapView.HideView();
+    }
+
     private void GoToLevel()
     {
-        FileManager.Instance.SaveCurrentMap();
+        if (saveCurrentMap)
+        {
+            FileManager.Instance.SaveCurrentMap();
+        }
 
         foreach (Transform child in GameManager.Instance.StairsParent)
         {
@@ -37,50 +50,4 @@ public class GoToLevelState : BaseState
 
         StateManager.Instance.ChangeState(new PlayerTurnState());
     }
-
-    // private void GoToDownLevel()
-    // {
-    //     FileManager.Instance.SaveCurrentMap();
-
-    //     foreach (Transform child in GameManager.Instance.StairsParent)
-    //     {
-    //         GameObject.Destroy(child.gameObject);
-    //     }
-
-    //     foreach (Transform child in GameManager.Instance.MonstersParent)
-    //     {
-    //         GameObject.Destroy(child.gameObject);
-    //     }
-
-    //     SchedulingManager.Instance.Clear();
-
-    //     StateManager.Instance.PushState(new GenerateMapState());
-
-    //     WorldManager.Instance.currentMap.Draw();
-
-    //     StateManager.Instance.ChangeState(new PlayerTurnState());
-    // }
-
-    // private void GoToUpLevel()
-    // {
-    //     FileManager.Instance.SaveCurrentMap();
-
-    //     foreach (Transform child in GameManager.Instance.StairsParent)
-    //     {
-    //         GameObject.Destroy(child.gameObject);
-    //     }
-
-    //     foreach (Transform child in GameManager.Instance.MonstersParent)
-    //     {
-    //         GameObject.Destroy(child.gameObject);
-    //     }
-
-    //     SchedulingManager.Instance.Clear();
-
-    //     StateManager.Instance.PushState(new LoadMapState());
-
-    //     WorldManager.Instance.currentMap.Draw();
-
-    //     StateManager.Instance.ChangeState(new PlayerTurnState());
-    // }
 }

@@ -54,7 +54,7 @@ public class PlayerTurnState : BaseState
             Stairs usedStairs = WorldManager.Instance.currentMap.CanMoveNextLevel();
             if (usedStairs != null)
             {
-                StateManager.Instance.AddState(new GoToLevelState { mapIdGoingTo = usedStairs.goToLevelId });
+                StateManager.Instance.AddState(new GoToLevelState { mapIdGoingTo = usedStairs.goToLevelId, saveCurrentMap = true });
             }
         }
 

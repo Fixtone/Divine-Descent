@@ -29,4 +29,5 @@ public class MapObject : ScriptableObject
     public float fogIntensity;
 
     public List<StairsObject> stairsObjects;
+    public List<MonsterObject> monsterObjects;
 }

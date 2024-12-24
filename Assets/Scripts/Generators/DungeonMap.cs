@@ -29,7 +29,7 @@ public class DungeonMap : GameMap
         }
     }
 
-    public override void AddStairs(GameObject stairs)
+    public override void AddStairs(Stairs stairs)
     {
         DebugCommandRegister.GetCategoryInstance<MapCategoryDebugCommands>(MapDebugCommands.MAP_CATEGORY_NAME).AddStairsPosition(stairs.transform.localPosition);
 
@@ -46,13 +46,11 @@ public class DungeonMap : GameMap
         SchedulingManager.Instance.Add(player.GetComponent<Player>());
     }
 
-    public override void AddMonster(GameObject monster)
+    public override void AddMonster(Monster monster)
     {
         monsters.Add(monster);
 
-        Monster monsterComponent = monster.GetComponent<Monster>();
-
-        SetActorPosition(monsterComponent, (int)monsterComponent.transform.localPosition.x, (int)monsterComponent.transform.localPosition.y);
+        SetActorPosition(monster, (int)monster.transform.localPosition.x, (int)monster.transform.localPosition.y);
 
         SchedulingManager.Instance.Add(monster.GetComponent<Monster>());
     }
@@ -142,15 +140,15 @@ public class DungeonMap : GameMap
         mapSave.MapState = Save();
         mapSave.Monsters = new List<MonsterSave>();
 
-        foreach (GameObject monsterGO in monsters)
+        mapSave.Stairs = new List<StairsSave>();
+        foreach (Stairs stairs in stairs)
         {
-            mapSave.Monsters.Add(monsterGO.GetComponent<Monster>().Save());
+            mapSave.Stairs.Add(stairs.Save());
         }
 
-        mapSave.Stairs = new List<StairsSave>();
-        foreach (GameObject stairsGO in stairs)
+        foreach (Monster monster in monsters)
         {
-            mapSave.Stairs.Add(stairsGO.GetComponent<Stairs>().Save());
+            mapSave.Monsters.Add(monster.Save());
         }
 
         return mapSave;
@@ -217,18 +215,12 @@ public class DungeonMap : GameMap
 
     private void DrawStairs()
     {
-        foreach (GameObject stairsGO in this.stairs)
+        foreach (Stairs stairs in this.stairs)
         {
-            Stairs stairs = stairsGO.GetComponent<Stairs>();
-            if (stairs == null)
-            {
-                continue;
-            }
-
             Color color = Color.white;
             if (DebugCommandRegister.GetCategoryInstance<MapCategoryDebugCommands>(MapDebugCommands.MAP_CATEGORY_NAME).FieldOfView)
             {
-                Vector2Int stairsMapPosition = new Vector2Int((int)stairsGO.transform.localPosition.x, (int)stairsGO.transform.localPosition.y);
+                Vector2Int stairsMapPosition = new Vector2Int((int)stairs.transform.localPosition.x, (int)stairs.transform.localPosition.y);
                 ICell mapCell = GetCell(stairsMapPosition.x, stairsMapPosition.y);
 
                 color = Color.white;
@@ -258,18 +250,12 @@ public class DungeonMap : GameMap
 
     private void DrawMonsters()
     {
-        foreach (GameObject monsterGO in this.monsters)
+        foreach (Monster monster in this.monsters)
         {
-            Monster monster = monsterGO.GetComponent<Monster>();
-            if (stairs == null)
-            {
-                continue;
-            }
-
             Color color = Color.white;
             if (DebugCommandRegister.GetCategoryInstance<MapCategoryDebugCommands>(MapDebugCommands.MAP_CATEGORY_NAME).FieldOfView)
             {
-                Vector2Int monsterMapPosition = new Vector2Int((int)monsterGO.transform.localPosition.x, (int)monsterGO.transform.localPosition.y);
+                Vector2Int monsterMapPosition = new Vector2Int((int)monster.transform.localPosition.x, (int)monster.transform.localPosition.y);
                 ICell mapCell = GetCell(monsterMapPosition.x, monsterMapPosition.y);
 
                 color = Color.white;
@@ -296,4 +282,10 @@ public class DungeonMap : GameMap
             monster.Draw(color);
         }
     }
+    public override Stairs CanMoveNextLevel()
+    {
+        GameObject playerGO = GameManager.Instance.player;
+        return stairs.Find(item => item.transform.localPosition.Equals(playerGO.transform.localPosition));
+    }
+
 }

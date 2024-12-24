@@ -49,9 +49,13 @@ public class PlayerTurnState : BaseState
         {
             FileManager.Instance.LoadGame();
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.U))
         {
-            StateManager.Instance.AddState(new GoToLevelState { stairsType = Stairs.Direction.Down });
+            Stairs usedStairs = WorldManager.Instance.currentMap.CanMoveNextLevel();
+            if (usedStairs != null)
+            {
+                StateManager.Instance.AddState(new GoToLevelState { mapIdGoingTo = usedStairs.goToLevelId });
+            }
         }
 
         if (didAction)

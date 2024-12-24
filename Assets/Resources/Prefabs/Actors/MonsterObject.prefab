@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4603493610692545310}
   - component: {fileID: 3266957952101483998}
   m_Layer: 0
-  m_Name: Kobol
+  m_Name: MonsterObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

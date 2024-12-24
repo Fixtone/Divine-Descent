@@ -14,29 +14,34 @@ public enum GameMapTypes
 public class GameMap : Map
 {
     protected int id;
-    protected List<GameObject> monsters = new List<GameObject>();
-    protected List<GameObject> stairs = new List<GameObject>();
+    protected List<Monster> monsters = new List<Monster>();
+    protected List<Stairs> stairs = new List<Stairs>();
     protected float fogIntensity;
 
     public GameMap()
     {
     }
 
-    public virtual void SetId(int id)
+    public void SetId(int id)
     {
         this.id = id;
+    }
+
+    public int GetId()
+    {
+        return this.id;
     }
 
     public virtual void UpdatePlayerFieldOfView(Player player)
     { }
 
-    public virtual void AddStairs(GameObject stairs)
+    public virtual void AddStairs(Stairs stairs)
     { }
 
     public virtual void AddPlayer(GameObject player)
     { }
 
-    public virtual void AddMonster(GameObject monster)
+    public virtual void AddMonster(Monster monster)
     {
     }
 
@@ -79,5 +84,10 @@ public class GameMap : Map
     public virtual void SetFogIntensity(float fogIntensity)
     {
         this.fogIntensity = fogIntensity;
+    }
+
+    public virtual Stairs CanMoveNextLevel()
+    {
+        return null;
     }
 }

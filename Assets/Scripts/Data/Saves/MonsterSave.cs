@@ -6,10 +6,10 @@ using RogueSharp;
 public struct MonsterSave
 {
     [SerializeField]
-    public string characterName;
-    [SerializeField]
-    public Vector3 mapPosition;
-    [SerializeField]
     public Entity.Type type;
     public Monster.SubType subtype;
+    [SerializeField]
+    public string spriteFileName;
+    [SerializeField]
+    public Vector3 mapPosition;
 }

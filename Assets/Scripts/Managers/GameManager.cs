@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
         WorldSeed = PlayerPrefs.GetInt("Seed");
         WorldRandom = new DotNetRandom(WorldSeed);
 
-        StateManager.Instance.PushState(new GenerateMapState());
+        StateManager.Instance.PushState(new GoToLevelState { mapIdGoingTo = 1 });
         StateManager.Instance.ChangeState(new PlayerTurnState());
     }
 

@@ -9,11 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a504bc1e4a6574944b3ca259a25cd42d, type: 3}
-  m_Name: StairsFromLevel1ToLevel2_1
+  m_Script: {fileID: 11500000, guid: ea53f8112deb58549a6c23573a1fea5a, type: 3}
+  m_Name: KobolObject
   m_EditorClassIdentifier: 
-  id: 1
-  type: 1
-  direction: 1
-  sprite: {fileID: 1218594190, guid: f367e9b805be74336a99dab22f334e4f, type: 3}
-  goToLevelId: 2
+  id: 0
+  type: 0
+  subtype: 3
+  sprite: {fileID: -1207681477, guid: 28653c8092b094f3cb28cab66a284681, type: 3}

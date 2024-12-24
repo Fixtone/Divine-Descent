@@ -38,6 +38,8 @@ public class Entity : MonoBehaviour
         }
     }
 
+    public GameObject scriptableObject;
+
     [SerializeField]
     protected SpriteRenderer spriteRenderer;
 

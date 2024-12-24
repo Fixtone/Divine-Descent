@@ -18,7 +18,8 @@ public class StairsObject : ScriptableObject
     }
 
     public int id;
-    public Stairs.Type type;
+    public Entity.Type type;
+    public Stairs.Direction direction;
     public Sprite sprite;
     public int goToLevelId;
 }

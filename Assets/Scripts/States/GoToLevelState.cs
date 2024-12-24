@@ -7,28 +7,17 @@ using UnityEngine;
 /// </summary>
 public class GoToLevelState : BaseState
 {
-    public Stairs.Direction stairsType;
+    public int mapIdGoingTo;
     public override void EnterState()
     {
         base.EnterState();
 
-        switch (stairsType)
-        {
-            case Stairs.Direction.Up:
-                {
-                    break;
-                }
-            case Stairs.Direction.Down:
-                {
-                    GoToDownLevel();
-                    break;
-                }
-        };
+        GoToLevel();
     }
 
-    private void GoToDownLevel()
+    private void GoToLevel()
     {
-        FileManager.Instance.SaveGame();
+        FileManager.Instance.SaveCurrentMap();
 
         foreach (Transform child in GameManager.Instance.StairsParent)
         {
@@ -42,14 +31,56 @@ public class GoToLevelState : BaseState
 
         SchedulingManager.Instance.Clear();
 
-        StateManager.Instance.PushState(new GenerateMapState());
+        WorldManager.Instance.LoadMap(mapIdGoingTo);
 
         WorldManager.Instance.currentMap.Draw();
 
         StateManager.Instance.ChangeState(new PlayerTurnState());
     }
 
-    private void GoToUpLevel()
-    {
-    }
+    // private void GoToDownLevel()
+    // {
+    //     FileManager.Instance.SaveCurrentMap();
+
+    //     foreach (Transform child in GameManager.Instance.StairsParent)
+    //     {
+    //         GameObject.Destroy(child.gameObject);
+    //     }
+
+    //     foreach (Transform child in GameManager.Instance.MonstersParent)
+    //     {
+    //         GameObject.Destroy(child.gameObject);
+    //     }
+
+    //     SchedulingManager.Instance.Clear();
+
+    //     StateManager.Instance.PushState(new GenerateMapState());
+
+    //     WorldManager.Instance.currentMap.Draw();
+
+    //     StateManager.Instance.ChangeState(new PlayerTurnState());
+    // }
+
+    // private void GoToUpLevel()
+    // {
+    //     FileManager.Instance.SaveCurrentMap();
+
+    //     foreach (Transform child in GameManager.Instance.StairsParent)
+    //     {
+    //         GameObject.Destroy(child.gameObject);
+    //     }
+
+    //     foreach (Transform child in GameManager.Instance.MonstersParent)
+    //     {
+    //         GameObject.Destroy(child.gameObject);
+    //     }
+
+    //     SchedulingManager.Instance.Clear();
+
+    //     StateManager.Instance.PushState(new LoadMapState());
+
+    //     WorldManager.Instance.currentMap.Draw();
+
+    //     StateManager.Instance.ChangeState(new PlayerTurnState());
+    // }
 }

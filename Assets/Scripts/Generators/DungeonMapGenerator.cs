@@ -1,4 +1,3 @@
-using System.Reflection;
 using UnityEngine;
 using RogueSharp.MapCreation;
 using System.Linq;
@@ -15,7 +14,9 @@ public class DungeonMapGenerator
     private readonly float _fogIntensity;
     private readonly MapObject _mapObject;
     private readonly RogueSharp.Random.IRandom _random;
+    private readonly MapSave _mapSave;
     private DungeonMap _map;
+
 
     public DungeonMapGenerator(MapObject mapObject, RogueSharp.Random.IRandom random)
     {
@@ -28,6 +29,11 @@ public class DungeonMapGenerator
         _fogIntensity = mapObject.fogIntensity;
         _mapObject = mapObject;
         _random = random;
+    }
+
+    public DungeonMapGenerator(MapSave mapSave)
+    {
+        _mapSave = mapSave;
     }
 
     public DungeonMap CreateMap()
@@ -45,33 +51,43 @@ public class DungeonMapGenerator
         return _map;
     }
 
+    public DungeonMap LoadMap()
+    {
+        BorderOnlyMapCreationStrategy<DungeonMap> mapCreationStrategy = new BorderOnlyMapCreationStrategy<DungeonMap>(_mapSave.MapState.Width, _mapSave.MapState.Height);
+        _map = mapCreationStrategy.CreateMap();
+        _map.LoadMap(_mapSave);
+
+        _map.SetId(_mapSave.Id);
+        _map.SetFogIntensity(_mapSave.FogIntensity);
+
+        return _map;
+    }
+
     private void PlaceStairs()
     {
         string mapObjectPrefabPath = FileManager.Instance.GetMapObjectPrefabPath();
         GameObject stairsPrefab = Resources.Load<GameObject>(mapObjectPrefabPath);
 
-        foreach(StairsObject stairsObject in _mapObject.stairsObjects)
+        foreach (StairsObject stairsObject in _mapObject.stairsObjects)
         {
-            GameObject stairsInstance = GameObject.Instantiate(stairsPrefab, GameManager.Instance.StairsParent);
-            Stairs downStairsComponent = stairsInstance.GetComponent<Stairs>();
-            downStairsComponent.type = Entity.Type.MapObject;
-            downStairsComponent.transform.localPosition = new Vector3(_map.Rooms.LastOrDefault().Center.X, _map.Rooms.LastOrDefault().Center.Y, 0.0f);
+            Vector3 position = Vector3.zero;
+            switch (stairsObject.direction)
+            {
+                case Stairs.Direction.Up:
+                    {
+                        position = new Vector3(_map.Rooms.FirstOrDefault().Center.X, _map.Rooms.FirstOrDefault().Center.Y, 0.0f);
+                        break;
+                    }
+                case Stairs.Direction.Down:
+                    {
+                        position = new Vector3(_map.Rooms.LastOrDefault().Center.X, _map.Rooms.LastOrDefault().Center.Y, 0.0f);
+                        break;
+                    }
+            }
 
+            Stairs stairsInstance = Stairs.Create(stairsObject, position);
             _map.AddStairs(stairsInstance);
         }
-
-        //GameObject stairsPrefab = Resources.Load<GameObject>("Prefabs/Scenery/StairsDown");
-        //GameObject stairsInstance = GameObject.Instantiate(stairsPrefab, GameManager.Instance.StairsParent);
-
-        //Stairs downStairsComponent = stairsInstance.GetComponent<Stairs>();
-        
-        // stairsPrefab = Resources.Load<GameObject>("Prefabs/Scenery/StairsUp");
-        // stairsInstance = GameObject.Instantiate(stairsPrefab, GameManager.Instance.StairsParent);
-
-        // Stairs upStairsComponent = stairsInstance.GetComponent<Stairs>();
-        // upStairsComponent.PrefabPath = "Prefabs/Scenery/StairsUp";
-        // upStairsComponent.transform.localPosition = new Vector3(_map.Rooms.FirstOrDefault().Center.X, _map.Rooms.FirstOrDefault().Center.Y, 0.0f);
-        // _map.AddStairs(stairsInstance);
     }
 
     private void PlacePlayer()
@@ -106,14 +122,9 @@ public class DungeonMapGenerator
                     {                                                                     // In that case skip creating the monster                           
                                                                                           // var monster = Kobold.Create(1, game);                          // Temporarily hard code this monster to be created at level 1
 
-                        GameObject kobolPrefab = Resources.Load<GameObject>("Prefabs/Actors/Kobol");
-                        GameObject kobolGOInstance = GameObject.Instantiate(kobolPrefab, GameManager.Instance.MonstersParent);
-                        Monster monsterComponent = kobolGOInstance.GetComponent<Monster>();
-                        monsterComponent.type = Entity.Type.Actor;
-                        monsterComponent.subType = Actor.SubType.Humanoid;
-                        monsterComponent.transform.localPosition = randomRoomLocation;
 
-                        _map.AddMonster(kobolGOInstance);
+                        Monster monster = Monster.Create(_mapObject.monsterObjects.FirstOrDefault(), randomRoomLocation);
+                        _map.AddMonster(monster);
                     }
                 }
             }

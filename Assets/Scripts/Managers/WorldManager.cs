@@ -15,11 +15,6 @@ public class WorldManager : MonoBehaviour
 
     public GameMap currentMap { get; private set; }
 
-    public Dictionary<int, GameMap> maps = new Dictionary<int, GameMap>();
-
-    [SerializeField]
-    private int currentMapId = 0;
-
     // Start is called before the first frame update
     private void Awake()
     {
@@ -33,26 +28,42 @@ public class WorldManager : MonoBehaviour
 
     public void GenerateNewMap()
     {
-        currentMapId++;
+        // currentMapId++;
 
-        MapObject mapObject = DatabaseManager.Instance.GetMapObjectById(currentMapId);
+        // MapObject mapObject = DatabaseManager.Instance.GetMapObjectById(currentMapId);
 
-        if (mapObject == null)
+        // if (mapObject == null)
+        // {
+        //     return;
+        // }
+
+        // switch (mapObject.gameMapType)
+        // {
+        //     case GameMapTypes.DungeonMap:
+        //         {
+        //             DungeonMapGenerator mapGenerator = new DungeonMapGenerator(mapObject, GameManager.Instance.WorldRandom);
+        //             currentMap = mapGenerator.CreateMap();
+        //             break;
+        //         }
+        // }
+
+        //maps.Add(currentMapId, currentMap);
+    }
+
+    public void LoadMap(int mapId)
+    {
+        MapSave? mapSave = FileManager.Instance.GetMapSaved(mapId);
+        if (mapSave != null)
         {
-            return;
+            DungeonMapGenerator mapGenerator = new DungeonMapGenerator(mapSave.Value);
+            currentMap = mapGenerator.LoadMap();
         }
-
-        switch (mapObject.gameMapType)
+        else
         {
-            case GameMapTypes.DungeonMap:
-                {
-                    DungeonMapGenerator mapGenerator = new DungeonMapGenerator(mapObject, GameManager.Instance.WorldRandom);
-                    currentMap = mapGenerator.CreateMap();
-                    break;
-                }
+            MapObject mapObject = DatabaseManager.Instance.GetMapObjectById(mapId);
+            DungeonMapGenerator mapGenerator = new DungeonMapGenerator(mapObject, GameManager.Instance.WorldRandom);
+            currentMap = mapGenerator.CreateMap();
         }
-
-        maps.Add(currentMapId, currentMap);
     }
 
     public WorldSave SaveWorld()
@@ -60,10 +71,10 @@ public class WorldManager : MonoBehaviour
         WorldSave worldSave = new WorldSave();
         worldSave.maps = new List<MapSave>();
 
-        foreach (KeyValuePair<int, GameMap> gameMap in maps)
-        {
-            worldSave.maps.Add(gameMap.Value.SaveMap());
-        }
+        // foreach (KeyValuePair<int, GameMap> gameMap in maps)
+        // {
+        //     worldSave.maps.Add(gameMap.Value.SaveMap());
+        // }
 
         return worldSave;
     }

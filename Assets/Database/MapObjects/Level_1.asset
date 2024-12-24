@@ -22,3 +22,5 @@ MonoBehaviour:
   fogIntensity: 0.25
   stairsObjects:
   - {fileID: 11400000, guid: 74b6e02c4adf04742851ad2d38a3e5c6, type: 2}
+  monsterObjects:
+  - {fileID: 11400000, guid: b1eda2b2993c3c049b2ad968e7f50519, type: 2}

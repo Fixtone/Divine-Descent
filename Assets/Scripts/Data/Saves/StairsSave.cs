@@ -6,9 +6,17 @@ using RogueSharp;
 public struct StairsSave
 {
     [SerializeField]
-    public Stairs.Type type;
+    public Entity.Type type;
+
+    [SerializeField]
+    public Stairs.Direction Direction;
+
     [SerializeField]
     public Vector3 mapPosition;
+
     [SerializeField]
-    public string prefabPath;
+    public string spriteFileName;
+
+    [SerializeField]
+    public int goToLevelId;
 }

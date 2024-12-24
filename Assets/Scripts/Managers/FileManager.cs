@@ -94,9 +94,86 @@ public class FileManager : MonoBehaviour
         CameraManager.Instance.UpdateCamera();
     }
 
+    public WorldSave? GetWorldSave()
+    {
+        string worldPath = Application.persistentDataPath + "/World.json";
+
+        if (!File.Exists(worldPath))
+        {
+            return null;
+        }
+
+        string saveString = File.ReadAllText(worldPath);
+        return JsonUtility.FromJson<WorldSave>(saveString);
+    }
+
+    public bool SaveWorldSave(WorldSave worldSave)
+    {
+        string worldPath = Application.persistentDataPath + "/World.json";
+
+        if (!File.Exists(worldPath))
+        {
+            return false;
+        }
+
+        string json = JsonUtility.ToJson(worldSave);
+        File.WriteAllText(worldPath, json);
+        return true;
+    }
+
+    public void SaveCurrentMap()
+    {
+        WorldSave? worldSave = GetWorldSave();
+        if (worldSave == null)
+        {
+            return;
+        }
+
+        int currentMapId = WorldManager.Instance.currentMap.GetId();
+        bool mapExists = worldSave.Value.maps.Exists(map => map.Id.Equals(currentMapId));
+        if (mapExists)
+        {
+            int savedMapSaveIndex = worldSave.Value.maps.FindIndex(map => map.Id.Equals(currentMapId));
+            worldSave.Value.maps[savedMapSaveIndex] = WorldManager.Instance.SaveCurrentMap();
+        }
+        else
+        {
+            worldSave.Value.maps.Add(WorldManager.Instance.SaveCurrentMap());
+        }
+
+        SaveWorldSave(worldSave.Value);
+    }
+
+    public MapSave? GetMapSaved(int mapId)
+    {
+        string mapPath = Application.persistentDataPath + "/World.json";
+
+        if (!File.Exists(mapPath))
+        {
+            return null;
+        }
+
+        WorldSave worldSave = new WorldSave();
+        string saveString = File.ReadAllText(mapPath);
+        worldSave = JsonUtility.FromJson<WorldSave>(saveString);
+
+        bool existMapSaved = worldSave.maps.Exists(map => map.Id == mapId);
+        if (!existMapSaved)
+        {
+            return null;
+        }
+
+        return worldSave.maps.Find(map => map.Id == mapId);
+    }
+
     public string GetMapObjectPrefabPath()
     {
         return "Prefabs/Scenery/MapObject";
+    }
+
+    public string GetMonsterObjectPrefabPath()
+    {
+        return "Prefabs/Actors/MonsterObject";
     }
 }
 

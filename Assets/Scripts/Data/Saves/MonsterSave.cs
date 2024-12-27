@@ -9,7 +9,9 @@ public struct MonsterSave
     public Entity.Type type;
     public Monster.SubType subtype;
     [SerializeField]
-    public string spriteFileName;
+    public string textureFileName;
+    [SerializeField]
+    public int spriteIndex;
     [SerializeField]
     public Vector3 mapPosition;
 }

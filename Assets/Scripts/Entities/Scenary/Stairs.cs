@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -30,12 +31,35 @@ public class Stairs : Entity
     {
         StairsSave stairsSave = new StairsSave();
         stairsSave.type = type;
-        stairsSave.Direction = direction;
+        stairsSave.direction = direction;
         stairsSave.goToLevelId = goToLevelId;
-        stairsSave.spriteFileName = spriteRenderer.sprite.name;
+        stairsSave.textureFileName = spriteRenderer.sprite.texture.name;
+
+        string[] subs = spriteRenderer.sprite.name.Split('_');
+        stairsSave.spriteIndex = int.Parse(subs.Last());
+
         stairsSave.mapPosition = transform.localPosition;
 
         return stairsSave;
+    }
+
+    public static Stairs Load(StairsSave stairsSave)
+    {
+        string mapObjectPrefabPath = FileManager.Instance.GetMapObjectPrefabPath();
+        GameObject stairsPrefab = Resources.Load<GameObject>(mapObjectPrefabPath);
+        GameObject stairsInstance = GameObject.Instantiate(stairsPrefab, GameManager.Instance.StairsParent);
+       
+        Stairs stairsComponent = stairsInstance.GetComponent<Stairs>();
+
+        stairsComponent.type = stairsSave.type;
+        stairsComponent.direction = stairsSave.direction;
+        stairsComponent.goToLevelId = stairsSave.goToLevelId;
+
+        Sprite[] sprites = Resources.LoadAll<Sprite>(FileManager.TEXTURES_FOLDER_NAME + "_" + stairsSave.textureFileName);
+        stairsComponent.spriteRenderer.sprite = sprites[stairsSave.spriteIndex];
+        stairsComponent.transform.localPosition = stairsSave.mapPosition;
+
+        return stairsComponent;
     }
 
     public static Stairs Create(StairsObject stairsObject, Vector3 position = new Vector3())

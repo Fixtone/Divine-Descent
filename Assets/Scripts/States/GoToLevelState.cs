@@ -29,6 +29,7 @@ public class GoToLevelState : BaseState
     {
         if (saveCurrentMap)
         {
+            FileManager.Instance.SavePlayer();
             FileManager.Instance.SaveCurrentMap();
         }
 

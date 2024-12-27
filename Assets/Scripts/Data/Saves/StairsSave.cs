@@ -9,13 +9,16 @@ public struct StairsSave
     public Entity.Type type;
 
     [SerializeField]
-    public Stairs.Direction Direction;
+    public Stairs.Direction direction;
 
     [SerializeField]
     public Vector3 mapPosition;
 
     [SerializeField]
-    public string spriteFileName;
+    public string textureFileName;
+
+    [SerializeField]
+    public int spriteIndex;
 
     [SerializeField]
     public int goToLevelId;

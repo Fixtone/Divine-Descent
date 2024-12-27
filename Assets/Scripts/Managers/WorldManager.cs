@@ -24,7 +24,9 @@ public class WorldManager : MonoBehaviour
         MapSave? mapSave = FileManager.Instance.GetMapSaved(mapId);
         if (mapSave != null)
         {
-            DungeonMapGenerator mapGenerator = new DungeonMapGenerator(mapSave.Value);
+            PlayerSave? playerSave = FileManager.Instance.GetPlayerSaved();
+
+            DungeonMapGenerator mapGenerator = new DungeonMapGenerator(mapSave.Value, playerSave.Value);
             currentMap = mapGenerator.LoadMap();
         }
         else

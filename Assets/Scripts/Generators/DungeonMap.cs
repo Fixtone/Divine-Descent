@@ -151,12 +151,27 @@ public class DungeonMap : GameMap
             mapSave.Monsters.Add(monster.Save());
         }
 
+        mapSave.Rooms = new List<RectangleSave>();
+        foreach (Rectangle rectangle in Rooms)
+        {
+            mapSave.Rooms.Add(rectangle.Save());
+        }
+
         return mapSave;
     }
 
     public override void LoadMap(MapSave mapSave)
     {
         Restore(mapSave.MapState);
+
+        List<Rectangle> loadRooms = new List<Rectangle>();
+        foreach (RectangleSave rectangleSave in mapSave.Rooms)
+        {
+            Rectangle room = new Rectangle(rectangleSave.X, rectangleSave.Y, rectangleSave.Width, rectangleSave.Height);
+            loadRooms.Add(room);
+        }
+
+        SetRooms(loadRooms);
     }
 
     public override void Draw()

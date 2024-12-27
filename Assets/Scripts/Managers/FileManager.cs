@@ -1,10 +1,13 @@
 using System.IO;
+using System.Net.NetworkInformation;
 using UnityEngine;
 
 public class FileManager : MonoBehaviour
 {
     public static FileManager Instance;
 
+    public static string TEXTURES_FOLDER_NAME = "Textures";
+    
     [SerializeField]
     private string persistentDataPath;
 
@@ -119,6 +122,31 @@ public class FileManager : MonoBehaviour
         string json = JsonUtility.ToJson(worldSave);
         File.WriteAllText(worldPath, json);
         return true;
+    }
+
+    public void SavePlayer()
+    {
+        string playerPath = Application.persistentDataPath + "/Player.json";
+        PlayerSave playerSave = GameManager.Instance.player.GetComponent<Player>().Save();
+
+        string json = JsonUtility.ToJson(playerSave);
+        File.WriteAllText(playerPath, json);
+    }
+
+    public PlayerSave? GetPlayerSaved()
+    {
+        string mapPath = Application.persistentDataPath + "/Player.json";
+
+        if (!File.Exists(mapPath))
+        {
+            return null;
+        }
+
+        PlayerSave playerSave = new PlayerSave();
+        string saveString = File.ReadAllText(mapPath);
+        playerSave = JsonUtility.FromJson<PlayerSave>(saveString);
+
+        return playerSave;
     }
 
     public void SaveCurrentMap()

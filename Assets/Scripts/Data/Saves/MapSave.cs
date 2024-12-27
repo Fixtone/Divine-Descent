@@ -17,4 +17,6 @@ public struct MapSave
     public List<MonsterSave> Monsters;
     [SerializeField]
     public List<StairsSave> Stairs;
+    [SerializeField]
+    public List<RectangleSave> Rooms;
 }

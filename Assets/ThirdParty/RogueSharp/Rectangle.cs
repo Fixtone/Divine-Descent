@@ -214,6 +214,16 @@ namespace RogueSharp
          Height += verticalValue * 2;
       }
 
+      public RectangleSave Save()
+      {
+         RectangleSave rectangleSave = new RectangleSave();
+         rectangleSave.X = X;
+         rectangleSave.Y = Y;
+         rectangleSave.Width = Width;
+         rectangleSave.Height = Height;
+         return rectangleSave;
+      }
+
       /// <summary>
       /// Compares whether current instance is equal to specified <see cref="object"/>.
       /// </summary>

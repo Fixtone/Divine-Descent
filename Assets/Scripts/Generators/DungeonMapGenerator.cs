@@ -15,6 +15,7 @@ public class DungeonMapGenerator
     private readonly MapObject _mapObject;
     private readonly RogueSharp.Random.IRandom _random;
     private readonly MapSave _mapSave;
+    private readonly PlayerSave _playerSave;
     private DungeonMap _map;
 
 
@@ -31,9 +32,10 @@ public class DungeonMapGenerator
         _random = random;
     }
 
-    public DungeonMapGenerator(MapSave mapSave)
+    public DungeonMapGenerator(MapSave mapSave, PlayerSave playerSave)
     {
         _mapSave = mapSave;
+        _playerSave = playerSave;
     }
 
     public DungeonMap CreateMap()
@@ -59,6 +61,10 @@ public class DungeonMapGenerator
 
         _map.SetId(_mapSave.Id);
         _map.SetFogIntensity(_mapSave.FogIntensity);
+
+        LoadStairs();
+        PlacePlayer(_playerSave.mapPosition);
+        LoadMonsters();
 
         return _map;
     }
@@ -90,7 +96,16 @@ public class DungeonMapGenerator
         }
     }
 
-    private void PlacePlayer()
+    private void LoadStairs()
+    {
+        foreach(StairsSave stairsSave in _mapSave.Stairs)
+        {
+             Stairs stairsInstance = Stairs.Load(stairsSave);
+             _map.AddStairs(stairsInstance);
+        }
+    }
+
+    private void PlacePlayer(Vector3? position = null)
     {
         GameObject player = GameManager.Instance.player;
         if (player == null)
@@ -99,8 +114,15 @@ public class DungeonMapGenerator
             player = GameObject.Instantiate(playerPrefab, GameManager.Instance.ActorsParent);
         }
 
-        player.transform.localPosition = new Vector3(_map.Rooms[0].Center.X, _map.Rooms[0].Center.Y, 0.0f);
-
+        if(position == null)
+        {
+            player.transform.localPosition = new Vector3(_map.Rooms[0].Center.X, _map.Rooms[0].Center.Y, 0.0f);
+        }
+        else
+        {
+            player.transform.localPosition = position.Value;
+        }
+        
         CameraManager.Instance.SetFollowTarget(player.transform);
 
         _map.AddPlayer(player);
@@ -128,6 +150,15 @@ public class DungeonMapGenerator
                     }
                 }
             }
+        }
+    }
+
+     private void LoadMonsters()
+    {
+        foreach(MonsterSave monsterSave in _mapSave.Monsters)
+        {
+             Monster monsterInstance = Monster.Load(monsterSave);
+             _map.AddMonster(monsterInstance);
         }
     }
 }

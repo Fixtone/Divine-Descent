@@ -3,7 +3,7 @@ using UnityEngine;
 using RogueSharp;
 
 [Serializable]
-public struct PlayerSave 
+public class PlayerSave 
 {
     [SerializeField]
     public string characterName;

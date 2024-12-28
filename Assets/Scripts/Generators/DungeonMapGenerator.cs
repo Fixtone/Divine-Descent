@@ -15,7 +15,6 @@ public class DungeonMapGenerator
     private readonly MapObject _mapObject;
     private readonly RogueSharp.Random.IRandom _random;
     private readonly MapSave _mapSave;
-    private readonly PlayerSave _playerSave;
     private DungeonMap _map;
 
 
@@ -32,10 +31,9 @@ public class DungeonMapGenerator
         _random = random;
     }
 
-    public DungeonMapGenerator(MapSave mapSave, PlayerSave playerSave)
+    public DungeonMapGenerator(MapSave mapSave)
     {
         _mapSave = mapSave;
-        _playerSave = playerSave;
     }
 
     public DungeonMap CreateMap()
@@ -63,7 +61,7 @@ public class DungeonMapGenerator
         _map.SetFogIntensity(_mapSave.FogIntensity);
 
         LoadStairs();
-        PlacePlayer(_playerSave.mapPosition);
+        PlacePlayer(_mapSave.playerPosition);
         LoadMonsters();
 
         return _map;

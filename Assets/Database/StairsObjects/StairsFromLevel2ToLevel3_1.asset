@@ -15,5 +15,5 @@ MonoBehaviour:
   id: 3
   type: 1
   direction: 1
-  sprite: {fileID: 1218594190, guid: f367e9b805be74336a99dab22f334e4f, type: 3}
+  sprite: {fileID: 432437351, guid: f367e9b805be74336a99dab22f334e4f, type: 3}
   goToLevelId: 3

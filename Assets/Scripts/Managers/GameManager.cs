@@ -1,7 +1,4 @@
-using System.IO;
-using RogueSharp;
 using RogueSharp.Random;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -35,9 +32,21 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        WorldSeed = PlayerPrefs.GetInt("Seed");
-        WorldRandom = new DotNetRandom(WorldSeed);
+        bool isNewGame = FileManager.Instance.IsNewGame();
+        if(isNewGame)
+        {
+            WorldSeed = 1983; //PlayerPrefs.GetInt("Seed");
+            WorldRandom = new DotNetRandom(WorldSeed);
 
-        StateManager.Instance.PushState(new GenerateNewWorldState());
+            StateManager.Instance.PushState(new GenerateNewWorldState());
+        }
+        else
+        {
+            WorldSave worldSave = FileManager.Instance.GetWorldSave();
+            WorldSeed = worldSave.worldSeed;
+            WorldRandom = new DotNetRandom(WorldSeed);
+
+            StateManager.Instance.PushState(new GoToLevelState{mapIdGoingTo = worldSave.currentMapId, saveCurrentMap = false});
+        }
     }
 }

@@ -139,6 +139,7 @@ public class DungeonMap : GameMap
         mapSave.FogIntensity = fogIntensity;
         mapSave.MapState = Save();
         mapSave.Monsters = new List<MonsterSave>();
+        mapSave.playerPosition = GameManager.Instance.player.transform.localPosition;
 
         mapSave.Stairs = new List<StairsSave>();
         foreach (Stairs stairs in stairs)

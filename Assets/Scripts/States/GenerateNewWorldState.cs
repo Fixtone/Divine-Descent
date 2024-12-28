@@ -11,7 +11,7 @@ public class GenerateNewWorldState : BaseState
     {
         base.PrepareState();
 
-        FileManager.Instance.CreateWorldSaveFile();
+        //FileManager.Instance.CreateWorldSaveFile();
 
         StateManager.Instance.PushState(new GoToLevelState { mapIdGoingTo = 1, saveCurrentMap = false });
     }

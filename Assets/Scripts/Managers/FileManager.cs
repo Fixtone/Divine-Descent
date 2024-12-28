@@ -1,5 +1,6 @@
 using System.IO;
 using System.Net.NetworkInformation;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class FileManager : MonoBehaviour
@@ -97,13 +98,20 @@ public class FileManager : MonoBehaviour
         // CameraManager.Instance.UpdateCamera();
     }
 
-    public WorldSave? GetWorldSave()
+    public bool IsNewGame()
+    {
+        string worldPath = Application.persistentDataPath + "/World.json";
+
+        return !File.Exists(worldPath);
+    }
+
+    public WorldSave GetWorldSave()
     {
         string worldPath = Application.persistentDataPath + "/World.json";
 
         if (!File.Exists(worldPath))
         {
-            return null;
+            CreateWorldSaveFile();
         }
 
         string saveString = File.ReadAllText(worldPath);
@@ -133,7 +141,7 @@ public class FileManager : MonoBehaviour
         File.WriteAllText(playerPath, json);
     }
 
-    public PlayerSave? GetPlayerSaved()
+    public PlayerSave GetPlayerSaved()
     {
         string mapPath = Application.persistentDataPath + "/Player.json";
 
@@ -151,28 +159,28 @@ public class FileManager : MonoBehaviour
 
     public void SaveCurrentMap()
     {
-        WorldSave? worldSave = GetWorldSave();
-        if (worldSave == null)
-        {
-            return;
-        }
+        WorldSave worldSave = GetWorldSave();
+
+        worldSave.worldSeed = GameManager.Instance.WorldSeed;
 
         int currentMapId = WorldManager.Instance.currentMap.GetId();
-        bool mapExists = worldSave.Value.maps.Exists(map => map.Id.Equals(currentMapId));
+        worldSave.currentMapId = currentMapId;
+        
+        bool mapExists = worldSave.maps.Exists(map => map.Id.Equals(currentMapId));
         if (mapExists)
         {
-            int savedMapSaveIndex = worldSave.Value.maps.FindIndex(map => map.Id.Equals(currentMapId));
-            worldSave.Value.maps[savedMapSaveIndex] = WorldManager.Instance.SaveCurrentMap();
+            int savedMapSaveIndex = worldSave.maps.FindIndex(map => map.Id.Equals(currentMapId));
+            worldSave.maps[savedMapSaveIndex] = WorldManager.Instance.SaveCurrentMap();
         }
         else
         {
-            worldSave.Value.maps.Add(WorldManager.Instance.SaveCurrentMap());
+            worldSave.maps.Add(WorldManager.Instance.SaveCurrentMap());
         }
 
-        SaveWorldSave(worldSave.Value);
+        SaveWorldSave(worldSave);
     }
 
-    public MapSave? GetMapSaved(int mapId)
+    public MapSave GetMapSaved(int mapId)
     {
         string mapPath = Application.persistentDataPath + "/World.json";
 

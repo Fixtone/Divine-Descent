@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 [Serializable]
-public struct MapSave
+public class MapSave
 {
     [SerializeField]
     public int Id;
@@ -13,6 +13,8 @@ public struct MapSave
     public float FogIntensity;
     [SerializeField]
     public MapState MapState;
+    [SerializeField]
+    public Vector3 playerPosition;
     [SerializeField]
     public List<MonsterSave> Monsters;
     [SerializeField]

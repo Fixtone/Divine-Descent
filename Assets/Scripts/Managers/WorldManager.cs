@@ -21,12 +21,12 @@ public class WorldManager : MonoBehaviour
 
     public void LoadMap(int mapId)
     {
-        MapSave? mapSave = FileManager.Instance.GetMapSaved(mapId);
+        MapSave mapSave = FileManager.Instance.GetMapSaved(mapId);
         if (mapSave != null)
         {
-            PlayerSave? playerSave = FileManager.Instance.GetPlayerSaved();
+            PlayerSave playerSave = FileManager.Instance.GetPlayerSaved();
 
-            DungeonMapGenerator mapGenerator = new DungeonMapGenerator(mapSave.Value, playerSave.Value);
+            DungeonMapGenerator mapGenerator = new DungeonMapGenerator(mapSave);
             currentMap = mapGenerator.LoadMap();
         }
         else

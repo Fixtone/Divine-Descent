@@ -49,6 +49,10 @@ public class PlayerTurnState : BaseState
         {
             FileManager.Instance.LoadGame();
         }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            StateManager.Instance.PushState(new PauseState());
+        }
         else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.U))
         {
             Stairs usedStairs = WorldManager.Instance.currentMap.CanMoveNextLevel();

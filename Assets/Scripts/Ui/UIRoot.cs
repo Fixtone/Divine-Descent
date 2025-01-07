@@ -6,6 +6,14 @@
 public class UIRoot : MonoBehaviour
 {
     [SerializeField]
+    private MainMenuView mainMenuView;
+    public MainMenuView MainMenuView => mainMenuView;
+
+    [SerializeField]
     private GenerateMapView generateMapView;
     public GenerateMapView GenerateMapView => generateMapView;
+    
+    [SerializeField]
+    private PauseView pauseView;
+    public PauseView PauseView => pauseView;
 }

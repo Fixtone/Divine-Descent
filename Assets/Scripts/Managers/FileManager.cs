@@ -1,16 +1,20 @@
+using System.Collections.Generic;
 using System.IO;
-using System.Net.NetworkInformation;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using UnityEngine.WSA;
 
 public class FileManager : MonoBehaviour
 {
     public static FileManager Instance;
 
+    public static string SAVE_FOLDER_NAME = "Saves";
     public static string TEXTURES_FOLDER_NAME = "Textures";
-    
+
     [SerializeField]
     private string persistentDataPath;
+
+    [SerializeField]
+    private string playerDirectoryName;
 
     private void Awake()
     {
@@ -21,7 +25,7 @@ public class FileManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        persistentDataPath = Application.persistentDataPath;
+        persistentDataPath = UnityEngine.Application.persistentDataPath + "/" + SAVE_FOLDER_NAME;
     }
 
     public void SaveGame()
@@ -98,16 +102,44 @@ public class FileManager : MonoBehaviour
         // CameraManager.Instance.UpdateCamera();
     }
 
+    public string[] GetGameSavesNames()
+    {
+        return Directory.GetDirectories(persistentDataPath);
+    }
+
+    public void createPlayerDirectoryName()
+    {
+        string playerSaveFolderNamePath = persistentDataPath + "/" + playerDirectoryName;
+
+        if (Directory.Exists(playerSaveFolderNamePath))
+        {
+            removeDirectory(playerSaveFolderNamePath);
+        }
+
+        Directory.CreateDirectory(playerSaveFolderNamePath);
+    }
+
+    public void setPlayerDirectoryName(string directoryName)
+    {
+        this.playerDirectoryName = directoryName;
+    }
+
+    private void removeDirectory(string directoryPath)
+    {
+        Directory.Delete(directoryPath, true);
+    }
+
     public bool IsNewGame()
     {
-        string worldPath = Application.persistentDataPath + "/World.json";
+        string playerSaveFolderNamePath = persistentDataPath + "/" + playerDirectoryName;
+        string worldPath = playerSaveFolderNamePath + "/World.json";
 
         return !File.Exists(worldPath);
     }
 
     public WorldSave GetWorldSave()
     {
-        string worldPath = Application.persistentDataPath + "/World.json";
+        string worldPath = persistentDataPath + "/" + playerDirectoryName + "/World.json";
 
         if (!File.Exists(worldPath))
         {
@@ -120,7 +152,7 @@ public class FileManager : MonoBehaviour
 
     public bool SaveWorldSave(WorldSave worldSave)
     {
-        string worldPath = Application.persistentDataPath + "/World.json";
+        string worldPath = persistentDataPath + "/" + playerDirectoryName + "/World.json";
 
         if (!File.Exists(worldPath))
         {
@@ -134,7 +166,7 @@ public class FileManager : MonoBehaviour
 
     public void SavePlayer()
     {
-        string playerPath = Application.persistentDataPath + "/Player.json";
+        string playerPath = persistentDataPath + "/" + playerDirectoryName + "/Player.json";
         PlayerSave playerSave = GameManager.Instance.player.GetComponent<Player>().Save();
 
         string json = JsonUtility.ToJson(playerSave);
@@ -143,7 +175,7 @@ public class FileManager : MonoBehaviour
 
     public PlayerSave GetPlayerSaved()
     {
-        string mapPath = Application.persistentDataPath + "/Player.json";
+        string mapPath = persistentDataPath + "/Player.json";
 
         if (!File.Exists(mapPath))
         {
@@ -165,7 +197,7 @@ public class FileManager : MonoBehaviour
 
         int currentMapId = WorldManager.Instance.currentMap.GetId();
         worldSave.currentMapId = currentMapId;
-        
+
         bool mapExists = worldSave.maps.Exists(map => map.Id.Equals(currentMapId));
         if (mapExists)
         {
@@ -182,7 +214,7 @@ public class FileManager : MonoBehaviour
 
     public MapSave GetMapSaved(int mapId)
     {
-        string mapPath = Application.persistentDataPath + "/World.json";
+        string mapPath = persistentDataPath + "/" + playerDirectoryName + "/World.json";
 
         if (!File.Exists(mapPath))
         {
@@ -204,7 +236,7 @@ public class FileManager : MonoBehaviour
 
     public void CreateWorldSaveFile()
     {
-        string worldPath = Application.persistentDataPath + "/World.json";
+        string worldPath = persistentDataPath + "/" + playerDirectoryName + "/World.json";
         if (File.Exists(worldPath))
         {
             return;

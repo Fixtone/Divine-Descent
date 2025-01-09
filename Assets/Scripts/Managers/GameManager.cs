@@ -23,30 +23,32 @@ public class GameManager : MonoBehaviour
             Instance = this;
 
         DontDestroyOnLoad(gameObject);
-
-        if (PlayerPrefs.GetString("TileSet") != string.Empty)
-        {
-            TileSet = PlayerPrefs.GetString("TileSet");
-        }
     }
 
     private void Start()
     {
-        bool isNewGame = FileManager.Instance.IsNewGame();
-        if(isNewGame)
-        {
-            WorldSeed = 1983; //PlayerPrefs.GetInt("Seed");
-            WorldRandom = new DotNetRandom(WorldSeed);
+        StateManager.Instance.PushState(new MainMenuState());
 
-            StateManager.Instance.PushState(new GenerateNewWorldState());
-        }
-        else
-        {
-            WorldSave worldSave = FileManager.Instance.GetWorldSave();
-            WorldSeed = worldSave.worldSeed;
-            WorldRandom = new DotNetRandom(WorldSeed);
+        // if (PlayerPrefs.GetString("TileSet") != string.Empty)
+        // {
+        //     TileSet = PlayerPrefs.GetString("TileSet");
+        // }
 
-            StateManager.Instance.PushState(new GoToLevelState{mapIdGoingTo = worldSave.currentMapId, saveCurrentMap = false});
-        }
+        // bool isNewGame = FileManager.Instance.IsNewGame();
+        // if(isNewGame)
+        // {
+        //     WorldSeed = 1983; //PlayerPrefs.GetInt("Seed");
+        //     WorldRandom = new DotNetRandom(WorldSeed);
+
+        //     StateManager.Instance.PushState(new GenerateNewWorldState());
+        // }
+        // else
+        // {
+        //     WorldSave worldSave = FileManager.Instance.GetWorldSave();
+        //     WorldSeed = worldSave.worldSeed;
+        //     WorldRandom = new DotNetRandom(WorldSeed);
+
+        //     StateManager.Instance.PushState(new GoToLevelState{mapIdGoingTo = worldSave.currentMapId, saveCurrentMap = false});
+        // }
     }
 }

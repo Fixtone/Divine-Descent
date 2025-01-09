@@ -1,8 +1,5 @@
 ﻿
-using System;
-using System.Collections.Generic;
 using RogueSharp.Random;
-using UnityEngine;
 
 public class LoadGameState : BaseState
 {
@@ -29,6 +26,13 @@ public class LoadGameState : BaseState
 
     private void OnGameClicked(string directoryName)
     {
+        if (string.IsNullOrEmpty(directoryName))
+        {
+            StateManager.Instance.PushState(new InfoPopupState { infoText = "You need to select one saved game." });
+
+            return;
+        }
+
         FileManager.Instance.setPlayerDirectoryName(directoryName);
 
         WorldSave worldSave = FileManager.Instance.GetWorldSave();
@@ -36,6 +40,6 @@ public class LoadGameState : BaseState
         GameManager.Instance.WorldSeed = 1234;
         GameManager.Instance.WorldRandom = new DotNetRandom(_worldSeed);
 
-        StateManager.Instance.PushState(new GoToLevelState { mapIdGoingTo = worldSave.currentMapId, saveCurrentMap = false });
+        StateManager.Instance.ChangeState(new GoToLevelState { mapIdGoingTo = worldSave.currentMapId, saveCurrentMap = false });
     }
 }

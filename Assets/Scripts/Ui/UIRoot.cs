@@ -24,4 +24,8 @@ public class UIRoot : MonoBehaviour
     [SerializeField]
     private PauseView pauseView;
     public PauseView PauseView => pauseView;
+
+    [SerializeField]
+    private InfoPopupView infoPopupView;
+    public InfoPopupView InfoPopupView => infoPopupView;
 }

@@ -11,7 +11,7 @@ public class GenerateNewWorldState : BaseState
     {
         base.PrepareState();
 
-        StateManager.Instance.PushState(new GoToLevelState { mapIdGoingTo = 1, saveCurrentMap = false });
+        StateManager.Instance.ChangeState(new GoToLevelState { mapIdGoingTo = 1, saveCurrentMap = false });
     }
 
     public override void DestroyState()

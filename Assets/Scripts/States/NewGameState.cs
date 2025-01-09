@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class NewGameState : BaseState
 {
-    private string _characterName;
-    private int _worldSeed;
-
     public override void PrepareState()
     {
         base.PrepareState();
@@ -16,24 +13,20 @@ public class NewGameState : BaseState
 
         newGameViewRef.OnGenerateNewGameClicked += OnGenerateNewGameClicked;
 
-        _characterName = "Character";
-        newGameViewRef.characterNameInputField.text = _characterName;
-
-        _worldSeed = UnityEngine.Random.Range(1, int.MaxValue);
-        newGameViewRef.seedInputField.text = _worldSeed.ToString();
+        newGameViewRef.InitData(UnityEngine.Random.Range(1, int.MaxValue), "Character");
 
         newGameViewRef.ShowView();
     }
 
-    private void OnGenerateNewGameClicked()
+    private void OnGenerateNewGameClicked(string directoryName, int seed)
     {
-        FileManager.Instance.setPlayerDirectoryName(_characterName);
+        FileManager.Instance.setPlayerDirectoryName(directoryName);
         FileManager.Instance.createPlayerDirectoryName();
 
-        GameManager.Instance.WorldSeed = _worldSeed;
-        GameManager.Instance.WorldRandom = new DotNetRandom(_worldSeed);
+        GameManager.Instance.WorldSeed = seed;
+        GameManager.Instance.WorldRandom = new DotNetRandom(seed);
 
-        StateManager.Instance.PushState(new GenerateNewWorldState());
+        StateManager.Instance.ChangeState(new GenerateNewWorldState());
     }
 
     public override void DestroyState()

@@ -18,7 +18,7 @@ public class PauseState : BaseState
     public override void DestroyState()
     {
         owner.UiRoot.PauseView.HideView();
-        
+
         owner.UiRoot.PauseView.OnContinueClicked -= ContinueClicked;
         owner.UiRoot.PauseView.OnSaveClicked -= SaveClicked;
         owner.UiRoot.PauseView.OnExitClicked -= ExitClicked;
@@ -41,6 +41,18 @@ public class PauseState : BaseState
 
     public void ExitClicked()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        foreach (Transform child in GameManager.Instance.StairsParent)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        foreach (Transform child in GameManager.Instance.MonstersParent)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        SchedulingManager.Instance.Clear();
+
+        StateManager.Instance.ChangeState(new MainMenuState());
     }
 }

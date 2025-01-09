@@ -33,11 +33,6 @@ public class LoadGameView : BaseView
 
     public void OnClickLoadGame()
     {
-        if (string.IsNullOrEmpty(_savedNameSelected))
-        {
-            return;
-        }
-
         OnLoadGameClicked?.Invoke(_savedNameSelected);
     }
 

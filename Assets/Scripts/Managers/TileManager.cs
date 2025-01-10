@@ -6,16 +6,18 @@ using UnityEngine.Tilemaps;
 
 public class TileManager : MonoBehaviour
 {
-    #region SINGLETON
 
     public static TileManager Instance;
 
     private void Awake()
     {
-        Instance = this;
-    }
+       if (Instance != null)
+            Destroy(gameObject);
+        else
+            Instance = this;
 
-    #endregion
+        DontDestroyOnLoad(gameObject);
+    }
 
     public Tilemap floorTileMap;
 
@@ -31,4 +33,10 @@ public class TileManager : MonoBehaviour
         floorTileMap.SetTileFlags(new Vector3Int(x, y, 0), TileFlags.None);
         floorTileMap.SetColor(new Vector3Int(x, y, 0), tile.color * color);
     }
+
+    public void Clear()
+    {
+        floorTileMap.ClearAllTiles();
+    }
+
 }

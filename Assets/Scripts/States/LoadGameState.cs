@@ -37,7 +37,7 @@ public class LoadGameState : BaseState
 
         WorldSave worldSave = FileManager.Instance.GetWorldSave();
 
-        GameManager.Instance.WorldSeed = 1234;
+        GameManager.Instance.WorldSeed = worldSave.worldSeed;
         GameManager.Instance.WorldRandom = new DotNetRandom(_worldSeed);
 
         StateManager.Instance.ChangeState(new GoToLevelState { mapIdGoingTo = worldSave.currentMapId, saveCurrentMap = false });

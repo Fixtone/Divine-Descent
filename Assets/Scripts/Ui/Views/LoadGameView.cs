@@ -18,6 +18,11 @@ public class LoadGameView : BaseView
             return;
         }
 
+        foreach(Transform child in content)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
         foreach (string gameSavePath in gameSavePaths)
         {
             GameObject saveGameButtonInstance = GameObject.Instantiate(saveGameButtonPrefab, content);

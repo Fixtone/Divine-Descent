@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class StateManager : MonoBehaviour
 {
-    #region Singleton
     public static StateManager Instance;
-    #endregion
 
     [SerializeField]
     private UIRoot uiRoot;
@@ -16,7 +14,12 @@ public class StateManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+       if (Instance != null)
+            Destroy(gameObject);
+        else
+            Instance = this;
+
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Update()

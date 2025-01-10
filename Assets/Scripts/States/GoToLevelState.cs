@@ -33,18 +33,8 @@ public class GoToLevelState : BaseState
             FileManager.Instance.SaveCurrentMap();
         }
 
-        foreach (Transform child in GameManager.Instance.StairsParent)
-        {
-            GameObject.Destroy(child.gameObject);
-        }
-
-        foreach (Transform child in GameManager.Instance.MonstersParent)
-        {
-            GameObject.Destroy(child.gameObject);
-        }
-
-        SchedulingManager.Instance.Clear();
-
+        GameManager.Instance.ClearMap();
+        
         WorldManager.Instance.LoadMap(mapIdGoingTo);
 
         WorldManager.Instance.currentMap.Draw();

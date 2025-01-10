@@ -28,27 +28,26 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         StateManager.Instance.PushState(new MainMenuState());
+    }
 
-        // if (PlayerPrefs.GetString("TileSet") != string.Empty)
-        // {
-        //     TileSet = PlayerPrefs.GetString("TileSet");
-        // }
+    public void ClearMap(bool removePlayer = false)
+    {
+        if(removePlayer)
+        {
+            GameObject.Destroy(player.gameObject);
+        }
 
-        // bool isNewGame = FileManager.Instance.IsNewGame();
-        // if(isNewGame)
-        // {
-        //     WorldSeed = 1983; //PlayerPrefs.GetInt("Seed");
-        //     WorldRandom = new DotNetRandom(WorldSeed);
+        foreach (Transform child in GameManager.Instance.StairsParent)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
 
-        //     StateManager.Instance.PushState(new GenerateNewWorldState());
-        // }
-        // else
-        // {
-        //     WorldSave worldSave = FileManager.Instance.GetWorldSave();
-        //     WorldSeed = worldSave.worldSeed;
-        //     WorldRandom = new DotNetRandom(WorldSeed);
+        foreach (Transform child in GameManager.Instance.MonstersParent)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
 
-        //     StateManager.Instance.PushState(new GoToLevelState{mapIdGoingTo = worldSave.currentMapId, saveCurrentMap = false});
-        // }
+        SchedulingManager.Instance.Clear();
+        TileManager.Instance.Clear();
     }
 }
